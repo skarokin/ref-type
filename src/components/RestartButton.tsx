@@ -12,6 +12,7 @@ const RestartButton = ({
 
   const handleClick = () => {
     buttonRef.current?.blur();
+    console.log("reset button clicked")
     handleRestart();
   };
 
