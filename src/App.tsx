@@ -15,9 +15,9 @@ const App = () => {
       <CountdownTimer timeLeft={timeLeft} />
       <WordsContainer>
         <GeneratedWords key={words} words={words} />
-        {/* User typed characters will be overlayed over the generated words */}
+        {/* User typed characters will be overlayed over the generated words; ensure same Tailwind properties */}
         <TypedCharacters
-          className="absolute inset-0"
+          className="absolute inset-0 break-words"
           words={words}
           userInput={typed}
         />
@@ -39,14 +39,14 @@ const App = () => {
 
 const WordsContainer = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="relative text-3xl max-w-xl leading-relaxed break-all mt-3">
+    <div className="w-[500px] h-[150px] relative text-3xl max-w-xl leading-relaxed break-words mt-3">
       {children}
     </div>
   );
 };
 
 const CountdownTimer = ({ timeLeft }: { timeLeft: number }) => {
-  return <h2 className="text-primary-400 font-medium">Time: {timeLeft}</h2>;
+  return <h2 className="text-primary-300 font-medium">Time: {timeLeft}</h2>;
 };
 
 export default App;
