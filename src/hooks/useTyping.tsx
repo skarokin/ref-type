@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isKeyboardCodeAllowed } from "../utils/helpers";
 
-const useTypings = (enabled: boolean) => {
+const useTypings = (enabled: boolean, words: string) => {
   const [cursor, setCursor] = useState(0);
   const [typed, setTyped] = useState<string>("");
   const totalTyped = useRef(0);
@@ -19,12 +19,16 @@ const useTypings = (enabled: boolean) => {
           totalTyped.current -= 1;
           break;
         default:
-          setTyped((prev) => prev.concat(key));
-          setCursor((cursor) => cursor + 1);
-          totalTyped.current += 1;
+          // ensure user can only type up to words.length characters
+          if (typed.length < words.length) {
+            setTyped((prev) => prev.concat(key));
+            setCursor((cursor) => cursor + 1);
+            totalTyped.current += 1;
+          } 
       }
     },
-    [enabled]
+    // we always have the latest typing status, word set, or typed string 
+    [enabled, words, typed]
   );
 
   const clearTyped = useCallback(() => {

@@ -10,6 +10,7 @@ const UserTypings = ({
   words: string;
   className?: string;
 }) => {
+  
   const typedCharacters = userInput.split("");
 
   return (
