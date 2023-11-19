@@ -4,13 +4,12 @@ first full-stack project
 much of the code for the typing game logic taken from https://www.youtube.com/watch?v=oc7BMlIU3VY
 
 # immediate-issues
-1. transitioning from one set of words to another SUCKS! Super unsmooth and natural instinct is to press spacebar but you can't after transition
-2. some words from faker library have a hyphen; this is a forbidden character!
-3. line-wrap instead of line-break if word is too long
-4. cannot set time (15s/60s is what i want)
-5. no wpm stat
-6. the caret isn't very well implemented - it's better to calculate correct caret position at each new set of words 
-7. its fricking ugly
+1. generatedWords and typedCharacters DOES properly word break, however typedCharacters word breaks only when the current word requires it
+- - Suppose one line of generatedWords forced a wordbreak when the last word is 5 characters long
+  - This works properly in generatedWords - it's already 5 characters long!
+  - However, the word at typedCharacters will continue to be appended to some empty space until it reaches 5 characters long 
+3. cannot set time (15s/60s is what i want)
+4. no wpm stat (this should be pretty easy to implement)
 
 # to-be-done
 1. allow user logins and signups
