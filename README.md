@@ -5,7 +5,7 @@ much of the code for the typing game logic taken from https://www.youtube.com/wa
 
 # immediate-issues
 1. generatedWords and typedCharacters DOES properly word break, however typedCharacters word breaks only when the current word requires it
-- - Suppose one line of generatedWords forced a wordbreak when the last word is 5 characters long
+  - Suppose one line of generatedWords forced a wordbreak when the last word is 5 characters long
   - This works properly in generatedWords - it's already 5 characters long!
   - However, the word at typedCharacters will continue to be appended to some empty space until it reaches 5 characters long 
 3. cannot set time (15s/60s is what i want)
