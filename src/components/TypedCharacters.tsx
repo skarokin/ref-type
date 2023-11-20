@@ -1,5 +1,6 @@
 import cn from "classnames";
 import Caret from "./Caret";
+import { motion } from "framer-motion";
 
 const UserTypings = ({
   userInput,
@@ -13,6 +14,8 @@ const UserTypings = ({
   
   const typedCharacters = userInput.split("");
 
+  // map() is being used to transform typedCharacters into an array of <Character> components
+  // with each component representing a character the user has typed
   return (
     <div className={className}>
       {typedCharacters.map((char, index) => (
@@ -38,7 +41,10 @@ const Character = ({
   const isWhiteSpace = expected === " ";
 
   return (
-    <span
+    <motion.span
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.1 }}
       className={cn({
         "text-red-500": !isCorrect && !isWhiteSpace,
         "text-primary-400": isCorrect && !isWhiteSpace,
@@ -46,7 +52,7 @@ const Character = ({
       })}
     >
       {expected}
-    </span>
+    </motion.span>
   );
 };
 

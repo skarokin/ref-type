@@ -4,6 +4,6 @@
 
 @layer base {
   body {
-    @apply bg-slate-800 text-slate-50 min-h-screen grid place-items-center	px-4 tracking-wider font-mono;
+    @apply bg-indigo-950 text-slate-50 min-h-screen grid place-items-center	px-4 tracking-wider font-mono;
   }
 }
