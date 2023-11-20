@@ -17,7 +17,7 @@ const App = () => {
         <GeneratedWords key={words} words={words} />
         {/* User typed characters will be overlayed over the generated words; ensure same Tailwind properties */}
         <TypedCharacters
-          className="absolute inset-0 break-words"
+          className="absolute inset-0 break-words whitespace-pre-wrap"
           words={words}
           userInput={typed}
         />
