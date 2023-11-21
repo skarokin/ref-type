@@ -4,13 +4,9 @@ First full-stack project
 Used this amazing repository https://github.com/gionathas/speed-typing to set up the base typing game logic (I'm not very good with React). I then modified it to feel more natural, i.e. monkeytype-esque.
 
 # immediate-concerns
-1. `generatedWords` and `typedCharacters` DOES properly word break, however `typedCharacters` word breaks only when the current word requires it
-   - Suppose one line of `generatedWords` forced a wordbreak when the last word is 5 characters long
-   - This works properly in `generatedWords` - it's already 5 characters long!
-   - However, the word at `typedCharacters` will continue to be appended to some empty space until it reaches 5 characters long
-   - **FIRST IDEA :** tried mapping `typedCharacters` to `generatedWords`, finding how far away the next white space is from `generatedWords[typedCharacters]` then appending white spaces to `typedCharacters`, but it didn't work well
-   - **POTENTIAL FIX :** split `generatedWords` into lines of 3, ensuring that each line only contains FULL words (how to ensure it only contains full words..?) Then, perform our mapping of `typedCharacters` to `generatedWords` as usual, just separated by line. `IF typedCharacters === line.length THEN moveToNextLine`.. `IF typedAllLines THEN generateNewWords`
-2. Errors can be reversed
+1. After fixing word-break issue, Caret is always stuck at the end of each word (duh)
+   - **IDEA:** I can instead make Caret track "totalTyped" (which is already in `useTyping.tsx`)
+3. Errors can be reversed
    - Instead, everytime an error is made, it should be added to an "error counter" which does not change even if the typer reverses the change
    - This is used for proper calculation of WPM!
 4. Cannot set time (15s/60s is what i want)
