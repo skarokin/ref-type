@@ -32,6 +32,18 @@ export const isKeyboardCodeAllowed = (code: string) => {
   
     return 0;
   };
+
+  export const calculateWPM = (chars: number, errors: number, seconds: number) => {
+    /*
+    Using the following formula:
+                (Total Typed Chars - Uncorrected Chars) / 5
+    Net WPM = --------------------------------------------------
+                          Time (minutes)
+    */
+    let minutes = seconds / 60
+    let totalWords = (chars - errors) / 5
+    return totalWords / minutes;
+  };
   
   export const formatPercentage = (percentage: number) => {
     return percentage.toFixed(0) + "%";
