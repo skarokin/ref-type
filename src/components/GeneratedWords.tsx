@@ -1,3 +1,7 @@
+/*
+*  Displays the generated words (relies on useWords hook)
+*/
+
 import { motion } from "framer-motion";
 
 const GeneratedWords = ({ words }: { words: string }) => {

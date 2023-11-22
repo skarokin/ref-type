@@ -1,3 +1,7 @@
+/*
+*  Displays the test results (animated!)
+*/
+
 import { motion } from "framer-motion";
 import { State } from "../hooks/useEngine";
 import { formatPercentage } from "../utils/helpers";
@@ -30,7 +34,7 @@ const Results = ({
     >
       <motion.li
         initial={initial}
-        animate={animate}
+        animate={animate} 
         transition={{ duration: 0.3 }}
         className="text-xl font-semibold"
       >

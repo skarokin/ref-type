@@ -1,3 +1,13 @@
+/*
+*  Handles typing logic
+*  RETURNS:
+*   - typed: string (the full user input)
+*   - cursor: number (the current position of the cursor)
+*   - clearTyped: function (clears user input)
+*   - resetTotalTyped: function (resets total typed counter)
+*   - totalTyped: number (total typed characters; used in WPM calculation)
+*/
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isKeyboardCodeAllowed } from "../utils/helpers";
 

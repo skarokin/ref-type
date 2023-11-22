@@ -1,3 +1,7 @@
+/*
+*  random functions that i didn't want to put in hooks or components because of clutter
+*/
+
 // accept only letters and whitespaces
 export const isKeyboardCodeAllowed = (code: string) => {
     return (
