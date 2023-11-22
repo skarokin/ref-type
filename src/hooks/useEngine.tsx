@@ -11,7 +11,7 @@
 */
 
 import { useCallback, useEffect, useState } from "react";
-import { countErrors, debug } from "../utils/helpers";
+import { calculateWPM, countErrors, debug } from "../utils/helpers";
 import useCountdown from "./useCountdown";
 import useTyping from "./useTyping";
 import useWords from "./useWords";
@@ -27,6 +27,7 @@ const useEngine = () => {
   const { words, updateWords } = useWords(NUMBER_OF_WORDS);
   const { cursor, typed, clearTyped, totalTyped, resetTotalTyped } = useTyping(state !== "finish", words);
   const [errors, setErrors] = useState(0);
+  const [wpm, setWPM] = useState(0);
 
   const isStarting = state === "start" && cursor > 0;
   const areWordsFinished = cursor === words.length;
@@ -37,6 +38,7 @@ const useEngine = () => {
     resetTotalTyped();
     setState("start");
     setErrors(0);
+    setWPM(0);
     updateWords();
     clearTyped();
   }, [clearTyped, updateWords, resetCountdown, resetTotalTyped]);
@@ -61,6 +63,7 @@ const useEngine = () => {
       debug("time is up...");
       setState("finish");
       sumErrors();
+      setWPM(calculateWPM(totalTyped, errors, COUNTDOWN_SECONDS));
     }
   }, [timeLeft, state, sumErrors]);
 
@@ -74,7 +77,7 @@ const useEngine = () => {
     }
   }, [clearTyped, areWordsFinished, updateWords, sumErrors]);
 
-  return { state, words, typed, errors, restart, timeLeft, totalTyped };
+  return { state, words, typed, errors, restart, timeLeft, totalTyped, wpm};
 };
 
 export default useEngine;

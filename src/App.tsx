@@ -7,7 +7,7 @@ import useEngine from "./hooks/useEngine";
 import { calculateAccuracyPercentage } from "./utils/helpers";
 
 const App = () => {
-  const { words, typed, timeLeft, errors, state, restart, totalTyped } =
+  const { words, typed, timeLeft, errors, state, restart, totalTyped, wpm} =
     useEngine();
 
   return (
@@ -32,6 +32,7 @@ const App = () => {
         errors={errors}
         accuracyPercentage={calculateAccuracyPercentage(errors, totalTyped)}
         total={totalTyped}
+        wpm={wpm}
       />
     </>
   );
