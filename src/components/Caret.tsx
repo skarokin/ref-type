@@ -1,3 +1,7 @@
+/*
+*  Displays the caret at the end of user input
+*/
+
 import { motion } from "framer-motion";
 
 const Caret = () => {

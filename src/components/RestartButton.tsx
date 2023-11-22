@@ -1,3 +1,9 @@
+/*
+*  Displays the restart button
+*  The function for restarting is passed as a prop to App.tsx
+*  - onRestart() function is defined in useEngine
+*/
+
 import { useRef } from "react";
 import { MdRefresh } from "react-icons/md";
 

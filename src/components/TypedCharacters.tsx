@@ -1,3 +1,10 @@
+/*
+*  Displays the user input 
+*  Correct characters displayed yellow
+*  Incorrect characters displayed red
+*  Blank unicode displayed invisible
+*/
+
 import cn from "classnames";
 import Caret from "./Caret";
 import { motion } from "framer-motion";

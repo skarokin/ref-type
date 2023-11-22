@@ -1,8 +1,12 @@
+/*
+*  Generates a random string of words based on count
+*  RETURNS:
+*  - words: string (the generated words)
+* - updateWords: function (updates the words)
+*/
+
 import { faker } from "@faker-js/faker";
 import { useCallback, useState } from "react";
-
-// this is a test - i am testing git branch
-// this is the main file where my new word generation logic is taking place
 
 const generateWords = (count: number) => {
   let words = faker.word.words(count);

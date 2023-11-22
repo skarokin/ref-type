@@ -1,3 +1,15 @@
+/*
+*  Combines useCountdown, useTyping, and useWords to create the typing engine
+*  RETURNS:
+*   - state: string (start, run, finish)
+*   - words: string (the currently generated set of words)
+*   - typed: string (the full user input)
+*   - errors: number (total number of errors)
+*   - restart: function (restarts the typing engine to default state)
+*   - timeLeft: number (time left in seconds)
+*   - totalTyped: number (total typed characters; used in WPM calculation)
+*/
+
 import { useCallback, useEffect, useState } from "react";
 import { countErrors, debug } from "../utils/helpers";
 import useCountdown from "./useCountdown";

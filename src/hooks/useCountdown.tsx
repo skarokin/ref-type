@@ -1,3 +1,11 @@
+/*
+*  Handles countdown logic
+*  RETURNS:
+*   - timeLeft: number (time left in seconds)
+*   - startCountdown: function (starts the countdown)
+*   - resetCountdown: function (resets the countdown)
+*/
+
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const useCountdown = (seconds: number) => {
