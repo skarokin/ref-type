@@ -12,18 +12,6 @@ export const isKeyboardCodeAllowed = (code: string) => {
     );
   };
   
-  export const countErrors = (actual: string, expected: string) => {
-    const expectedCharacters = expected.split("");
-  
-    return expectedCharacters.reduce((errors, expectedChar, i) => {
-      const actualChar = actual[i];
-      if (actualChar !== expectedChar) {
-        errors++;
-      }
-      return errors;
-    }, 0);
-  };
-  
   export const calculateAccuracyPercentage = (errors: number, total: number) => {
     if (total > 0) {
       const corrects = total - errors;
@@ -35,14 +23,11 @@ export const isKeyboardCodeAllowed = (code: string) => {
 
   export const calculateWPM = (chars: number, errors: number, seconds: number) => {
     /*
-    Using the following formula:
-                (Total Typed Chars - Uncorrected Chars) / 5
-    Net WPM = --------------------------------------------------
-                          Time (minutes)
+    (total typed chars - total errors) / 5 * (60 / seconds)
     */
-    let minutes = seconds / 60
+    let timeNormalizedTo60 = 60 / seconds;
     let totalWords = (chars - errors) / 5
-    return totalWords / minutes;
+    return parseFloat((totalWords*timeNormalizedTo60).toFixed(2));
   };
   
   export const formatPercentage = (percentage: number) => {
