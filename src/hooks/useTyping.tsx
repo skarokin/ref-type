@@ -14,6 +14,7 @@ import { isKeyboardCodeAllowed } from "../utils/helpers";
 const useTypings = (enabled: boolean, words: string) => {
   const [cursor, setCursor] = useState(0);
   const [typed, setTyped] = useState<string>("");
+  const [errors, setErrors] = useState(0);
   const totalTyped = useRef(0);
 
   const keydownHandler = useCallback(
@@ -34,7 +35,18 @@ const useTypings = (enabled: boolean, words: string) => {
             setTyped((prev) => prev.concat(key));
             setCursor((cursor) => cursor + 1);
             totalTyped.current += 1;
+
+            // if typed character doesn't match the expected character, we count it as an error
+            if (key !== words[typed.length]) {
+              setErrors((prevErrors) => prevErrors += 1);
+            }
           } 
+          // if user types more than words.length characters, we count it as an error
+          else {
+            setErrors((prevErrors) => prevErrors += 1);
+            totalTyped.current += 1;
+          }
+
       }
     },
     // we always have the latest typing status, word set, or typed string 
@@ -50,6 +62,10 @@ const useTypings = (enabled: boolean, words: string) => {
     totalTyped.current = 0;
   }, []);
 
+  const clearErrors = useCallback(() => {
+    setErrors(0);
+  }, []);
+ 
   // attach the keydown event listener to record keystrokes
   useEffect(() => {
     window.addEventListener("keydown", keydownHandler);
@@ -65,6 +81,8 @@ const useTypings = (enabled: boolean, words: string) => {
     clearTyped,
     resetTotalTyped,
     totalTyped: totalTyped.current,
+    errors,
+    clearErrors,
   };
 };
 
