@@ -11,15 +11,15 @@ const Results = ({
   errors,
   accuracyPercentage,
   total,
-  className = "",
   wpm,
+  className = "",
 }: {
   state: State;
   errors: number;
   accuracyPercentage: number;
   total: number;
-  className?: string;
   wpm: number;
+  className?: string;
 }) => {
   if (state !== "finish") {
     return null;
@@ -60,14 +60,14 @@ const Results = ({
       <motion.li
         initial={initial}
         animate={animate}
-        transition={{ duration: 0.3, delay: 1.4 }}
+        transition={{ duration: 0.3, delay: 1.5 }}
       >
-        Typed: {total}
+        Total Typed: {total}
       </motion.li>
       <motion.li
         initial={initial}
         animate={animate}
-        transition={{ duration: 0.3, delay: 1.4 }}
+        transition={{ duration: 0.3, delay: 2.0 }}
       >
         WPM: {wpm}
       </motion.li>
