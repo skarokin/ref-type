@@ -8,7 +8,6 @@
 import cn from "classnames";
 import Caret from "./Caret";
 import { motion } from "framer-motion";
-import React from "react";
 
 const UserTypings = ({
   userInput,
@@ -30,9 +29,7 @@ const UserTypings = ({
     typedCharacters.push("\u200b");
   }
   
-  // map() is being used to transform typedCharacters into an array of <Character> components
-  // with each component representing a character the user has typed
-  // ensure that the caret does not get mapped to a 'u\200b' character 
+  // map over typedCharacters and return a <Character> component for each character
   return (
     <div className={className}>
       {typedCharacters.map((char, index) => (
@@ -57,14 +54,19 @@ const Character = ({
   const isCorrect = actual === expected;
   const isWhiteSpace = expected === " ";
 
-  // if empty space, do not add any Tailwind classes
+
   const isEmptySpace = actual === "\u200b";
+  
+  // if empty space, return an empty span to ensure caret is properly positioned
+  if (isEmptySpace) {
+    return <span/>;
+  }
 
   return (
     <motion.span
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.05 }}
+      transition={{ duration: 0.1 }}
       className={cn({
         "text-red-500": !isCorrect && !isWhiteSpace,
         "text-primary-400": isCorrect && !isWhiteSpace,

@@ -23,11 +23,11 @@ export default function UserPanel({
     return (
         <div className={"fixed top-10 left-20 m-10 flex flex-col items-start"}>
             <FaUserCircle size={40} className={"m-4 text-slate-500"}/>
-            { false
+            { true
             ? 
             <div className={"flex flex-col items-start space-y-4"}>
-                <p className={className}>
-                    Username</p>
+                <button className={className}>
+                    Username</button>
                 <button className={className}>
                     Logout 
                 </button>

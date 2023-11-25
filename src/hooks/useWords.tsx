@@ -16,7 +16,7 @@ const generateWords = (count: number) => {
     words.push(word);
   }
 
-  // add a whitespace at the end
+  // add a whitespace at the end for natural typing experience
   words[words.length - 1] += " ";
 
   return words.join(' ');
