@@ -19,7 +19,7 @@ import useWords from "./useWords";
 export type State = "start" | "run" | "finish";
 
 const NUMBER_OF_WORDS = 5;
-const COUNTDOWN_SECONDS = 5;
+const COUNTDOWN_SECONDS = 7;
 
 const useEngine = () => {
   const [state, setState] = useState<State>("start");
@@ -41,7 +41,7 @@ const useEngine = () => {
     setWPM(0);
     updateWords();
     clearTyped();
-  }, [clearTyped, updateWords, resetCountdown, resetTotalTyped]);
+  }, [clearTyped, updateWords, resetCountdown, resetTotalTyped, clearErrors]);
 
   // as soon the user starts typing the first letter, we start
   useEffect(() => {
@@ -58,7 +58,7 @@ const useEngine = () => {
       setState("finish");
       setWPM(calculateWPM(totalTyped, errors, COUNTDOWN_SECONDS));
     }
-  }, [timeLeft, state]);
+  }, [timeLeft, state, errors, totalTyped]);
 
   // if user has typed all words AND final character is a whitespace, generate new words
   useEffect(() => {
@@ -67,7 +67,7 @@ const useEngine = () => {
       updateWords();
       clearTyped();
     }
-  }, [clearTyped, areWordsFinished, updateWords]);
+  }, [clearTyped, areWordsFinished, updateWords, typed]);
 
   return { state, words, typed, errors, restart, timeLeft, totalTyped, wpm };
 };
