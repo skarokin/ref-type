@@ -5,7 +5,6 @@ Used this amazing repository https://github.com/gionathas/speed-typing to set up
 
 # immediate-concerns
 1. Cannot set time (15s/60s is what i want)
-2. Make login and register form pretty!
 
 # to-be-done
 1. Allow user logins and signups
