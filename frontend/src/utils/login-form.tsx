@@ -25,16 +25,16 @@ export default function LoginForm({
     const handleSubmit = (e: any) => {
         e.preventDefault();
         // call our server to log the user in
-        // axios.post("http://localhost:1337/", values)
-        // .then(res => {
-        //     if (res.data.Status === "Success") {
-        //         console.log("Login success");
-        //         onSuccess();
-        //     } else {
-        //         console.log("Invalid credentials");
-        //     }
-        // })
-        // .then(err => console.log(err));
+        axios.post("http://localhost:8081/", values)
+        .then(res => {
+            if (res.data.Status === "Success") {
+                console.log("Login success");
+                onSuccess();
+            } else {
+                console.log("Invalid credentials");
+            }
+        })
+        .then(err => console.log(err));
     }
 
     return (
