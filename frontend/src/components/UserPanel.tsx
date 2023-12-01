@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import LoginForm from "../utils/login-form";
 import RegisterForm from "../utils/register-form";
+import handleLogout from "../utils/logout";
 import axios from "axios";
 
 export default function UserPanel({
@@ -21,23 +22,23 @@ export default function UserPanel({
 
     // the actual forms for login and register are in a separate component
     // those components will also handle sending and retrieving data from the server
-    const [displayLogin, setDisplayLogin] = useState(true);
-    const [displayRegister, setDisplayRegister] = useState(true);
+    const [displayLogin, setDisplayLogin] = useState(false);
+    const [displayRegister, setDisplayRegister] = useState(false);
 
     axios.defaults.withCredentials = true;
 
     // check if user is logged in
-    // useEffect(() => {
-    //     axios.get("http://localhost:1337/")
-    //     .then(res => {
-    //         if (res.data.Status === "Success") {
-    //             setAuth(true);
-    //             setUsername(res.data.Username);
-    //         } else {
-    //             setAuth(false);
-    //         }
-    //     });
-    // });
+    useEffect(() => {
+        axios.get("http://localhost:8081/")
+        .then(res => {
+            if (res.data.Status === "Success") {
+                setAuth(true);
+                setUsername(res.data.username);
+            } else {
+                setAuth(false);
+            }
+        });
+    });
 
     const handleLoginClick = () => {
         setDisplayLogin(true);
@@ -62,10 +63,10 @@ export default function UserPanel({
       return (
         <div className={"fixed top-10 left-20 m-10 flex flex-col items-start"}>
           <FaUserCircle size={40} className={"m-4 text-slate-500"}/>
-          {false ? (
+          {auth ? (
             <div className={"flex flex-col items-start space-y-4"}>
               <button className={className}>Username</button>
-              <button className={className}>Logout</button>
+              <button className={className} onClick={() => handleLogout(setAuth)}>Hi {username}, Logout?</button>
             </div>
           ) : (
             <div className="flex flex-col items-start space-y-4">
