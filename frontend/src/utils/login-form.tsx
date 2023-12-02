@@ -7,7 +7,7 @@ import axios from "axios";
 
 export default function LoginForm({
     onSuccess,
-    onCancel
+    onCancel,
 }: {
     onSuccess: () => void;
     onCancel: () => void;
@@ -17,6 +17,14 @@ export default function LoginForm({
         password: "",
         requestType: "login"
     });
+
+    const [error, setError] = useState<boolean>(false);
+
+    const displayError = () => {
+      if (error) {
+        return <p className="text-red-400 text-sm font-bold mb-2">Invalid credentials</p>
+      }
+    };
 
     // tells axios to include credentials (cookies) in all requests
     // needed because user auth relies on cookies
@@ -31,7 +39,7 @@ export default function LoginForm({
                 console.log("Login success");
                 onSuccess();
             } else {
-                console.log("Invalid credentials");
+                setError(true);
             }
         })
         .then(err => console.log(err));
@@ -63,6 +71,13 @@ export default function LoginForm({
                 name="password" 
                 onChange={e => setValues({...values, password: e.target.value})}
               />
+            </div>
+            <div>
+              {error && (
+                <div>
+                  {displayError()}
+                </div>
+              )}
             </div>
             <div className="flex items-center justify-between">
               <button 

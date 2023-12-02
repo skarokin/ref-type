@@ -34,7 +34,7 @@ app.listen(8081, () => {
 
 /* 
 *  ================================================================================
-*  FUNCTIONS FOR GET REQUESTS
+*  FUNCTIONS FOR GET REQUESTS (they are up here because they are middleware functions)
 *  ================================================================================
 */
 
@@ -59,10 +59,39 @@ const verifyUser = (req, res, next) => {
     });
 };
 
-// GET api for user verification and fetching top15/top60
+// function to fetch top15/top60 scores from database
+// when control is passed from verifyUser to this function, username is attached to the request object
+const fetchTopScores = (req, res, next) => {
+    // if user is not logged in, we can't fetch scores
+    if (!req.username) {
+        return res.json({Error: "User not authenticated"});
+    }
+
+    const sqlFetchTopScores = "SELECT top15_wpm, top15_accuracy FROM userinfo WHERE username = ?";
+    db.query(sqlFetchTopScores, [req.username], (err, data) => {
+        if (err) {
+            return res.json({Error: "Error querying database"});
+        }
+        // if user exists
+        if (data.length > 0) {
+            req.top15_wpm = data[0].top15_wpm;
+            req.top15_accuracy = data[0].top15_accuracy;
+            next();
+        } else {
+            return res.json({Error: "User does not exist"});
+        }
+    });
+};
+
+// GET api for user verification and fetching wpm/accuracy of top15/top60
 // uses middleware verifyUser and fetchTopScores
-app.get('/', verifyUser, (req, res) => {
-    return res.json({Status: "Success", username: req.username});
+app.get('/', verifyUser, fetchTopScores, (req, res) => {
+    return res.json({
+        Status: "Success", 
+        username: req.username,
+        top15_wpm: req.top15_wpm,
+        top15_accuracy: req.top15_accuracy
+    });
 });
 
 // POST api for registration, login, logout, and updating top15/top60

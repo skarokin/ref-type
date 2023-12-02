@@ -26,7 +26,7 @@ const useEngine = () => {
   const { timeLeft, startCountdown, resetCountdown } = useCountdown(COUNTDOWN_SECONDS);
   const { words, updateWords } = useWords(NUMBER_OF_WORDS);
   const { cursor, typed, clearTyped, totalTyped, resetTotalTyped, errors, clearErrors } = 
-    useTyping(state !== "finish", words);
+    useTyping((state !== "finish"), words);
   const [wpm, setWPM] = useState(0);
 
   const isStarting = state === "start" && cursor > 0;

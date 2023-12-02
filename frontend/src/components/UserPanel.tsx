@@ -21,12 +21,11 @@ export default function UserPanel({
     const [username, setUsername] = useState<string>("");
 
     // the actual forms for login and register are in a separate component
-    // those components will also handle sending and retrieving data from the server
+    // those components also handle sending and retrieving data from the server
     const [displayLogin, setDisplayLogin] = useState(false);
     const [displayRegister, setDisplayRegister] = useState(false);
 
     axios.defaults.withCredentials = true;
-
     // check if user is logged in
     useEffect(() => {
         axios.get("http://localhost:8081/")
@@ -73,13 +72,16 @@ export default function UserPanel({
               {!displayRegister && <button className={className} onClick={handleLoginClick}>Login</button>}
               {displayLogin && (
                 <div style={{ marginLeft: '20px' }}>
-                  <LoginForm onSuccess={handleLoginSuccess} onCancel={() => setDisplayLogin(false)}/>
+                  <LoginForm 
+                    onSuccess={handleLoginSuccess} 
+                    onCancel={() => setDisplayLogin(false)}
+                  />
                 </div>
               )}
               {!displayLogin && <button className={className} onClick={handleRegisterClick}>Register</button>}
               {displayRegister && (
                 <div style={{ marginLeft: '20px' }}>
-                  { <RegisterForm onSuccess={handleRegisterSuccess} onCancel={() => setDisplayRegister(false)}/> }
+                   <RegisterForm onSuccess={handleRegisterSuccess} onCancel={() => setDisplayRegister(false)}/> 
                 </div>
               )}
             </div>
