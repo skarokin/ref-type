@@ -1,9 +1,0 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer base {
-  body {
-    @apply bg-indigo-950 text-slate-50 min-h-screen grid place-items-center	px-4 tracking-wider font-mono;
-  }
-}

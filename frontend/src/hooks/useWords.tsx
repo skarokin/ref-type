@@ -5,19 +5,21 @@
 * - updateWords: function (updates the words)
 */
 
-import { faker } from "@faker-js/faker";
+import wordsList from "../utils/words-list";
 import { useCallback, useState } from "react";
 
 const generateWords = (count: number) => {
-  let words = faker.word.words(count);
+  let words = [];
 
-  // filter words with hyphens
-  words = words.split(' ').filter(word => !word.includes('-')).join(' ');
+  for (let i = 0; i < count; i++) {
+    let word = wordsList()[Math.floor(Math.random() * wordsList().length)];
+    words.push(word);
+  }
 
-  // add a whitespace at the end of the string (for natural typing experience)
-  words = words + ' ';
+  // add a whitespace at the end for natural typing experience
+  words[words.length - 1] += " ";
 
-  return words;
+  return words.join(' ');
 };
 
 const useWords = (count: number) => {
