@@ -9,7 +9,7 @@ import wordsList from "../utils/words-list";
 import { useCallback, useState } from "react";
 
 const generateWords = (count: number) => {
-  let words = [];
+  let words: string[] = [];
 
   for (let i = 0; i < count; i++) {
     let word = wordsList()[Math.floor(Math.random() * wordsList().length)];
