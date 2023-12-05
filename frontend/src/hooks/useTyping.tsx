@@ -11,7 +11,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isKeyboardCodeAllowed } from "../utils/helpers";
 
-const useTypings = (enabled: boolean, words: string) => {
+const useTypings = (enabled: boolean, words: string, userPanelOpened: boolean) => {
   const [cursor, setCursor] = useState(0);
   const [typed, setTyped] = useState<string>("");
   const [errors, setErrors] = useState(0);
@@ -19,7 +19,7 @@ const useTypings = (enabled: boolean, words: string) => {
 
   const keydownHandler = useCallback(
     ({ key, code }: KeyboardEvent) => {
-      if (!enabled || !isKeyboardCodeAllowed(code)) {
+      if (!enabled || !isKeyboardCodeAllowed(code) || userPanelOpened) {
         return;
       }
 
@@ -27,7 +27,6 @@ const useTypings = (enabled: boolean, words: string) => {
         case "Backspace":
           setTyped((prev) => prev.slice(0, -1));
           setCursor((cursor) => cursor - 1);
-          totalTyped.current -= 1;
           break;
         default:
           // ensure user can only type up to words.length characters
@@ -50,7 +49,7 @@ const useTypings = (enabled: boolean, words: string) => {
       }
     },
     // we always have the latest typing status, word set, or typed string 
-    [enabled, words, typed]
+    [enabled, words, typed, userPanelOpened]
   );
 
   const clearTyped = useCallback(() => {

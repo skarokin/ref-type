@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import GeneratedWords from "./components/GeneratedWords";
 import RestartButton from "./components/RestartButton";
 import TestResults from "./components/TestResults";
@@ -9,12 +9,18 @@ import { calculateAccuracyPercentage } from "./utils/helpers";
 import { VscGithub } from "react-icons/vsc";
 
 const App = () => {
+  // defined in a parent so we can pass to useEngine
+  const [userPanelOpened, setUserPanelOpened] = useState<boolean>(false);
+
   const { words, typed, timeLeft, errors, state, restart, totalTyped, wpm} =
-    useEngine();
+    useEngine(userPanelOpened);
 
   return (
     <>
-      <UserPanel />
+      <UserPanel
+        setUserPanelOpened={setUserPanelOpened}
+        userPanelOpened={userPanelOpened}
+      />
       <CountdownTimer timeLeft={timeLeft} />
       <WordsContainer>
         <GeneratedWords key={words} words={words} />

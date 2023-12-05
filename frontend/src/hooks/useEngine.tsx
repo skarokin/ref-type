@@ -21,12 +21,13 @@ export type State = "start" | "run" | "finish";
 const NUMBER_OF_WORDS = 5;
 const COUNTDOWN_SECONDS = 7;
 
-const useEngine = () => {
+const useEngine = (userPanelOpened: boolean) => {
+  
   const [state, setState] = useState<State>("start");
   const { timeLeft, startCountdown, resetCountdown } = useCountdown(COUNTDOWN_SECONDS);
   const { words, updateWords } = useWords(NUMBER_OF_WORDS);
   const { cursor, typed, clearTyped, totalTyped, resetTotalTyped, errors, clearErrors } = 
-    useTyping((state !== "finish"), words);
+    useTyping(state !== "finish", words, userPanelOpened);
   const [wpm, setWPM] = useState(0);
 
   const isStarting = state === "start" && cursor > 0;

@@ -13,8 +13,12 @@ import handleLogout from "../utils/logout";
 import axios from "axios";
 
 export default function UserPanel({
+    userPanelOpened,
+    setUserPanelOpened,
     className = "text-lg font-bold hover:bg-slate-700/50 text-slate-500 py-1 px-2 rounded",
 }: {
+    userPanelOpened: boolean;
+    setUserPanelOpened: React.Dispatch<React.SetStateAction<boolean>>;
     className?: string;
 }) {
     const [auth, setAuth] = useState<boolean>(false);
@@ -22,8 +26,8 @@ export default function UserPanel({
 
     // the actual forms for login and register are in a separate component
     // those components also handle sending and retrieving data from the server
-    const [displayLogin, setDisplayLogin] = useState(false);
-    const [displayRegister, setDisplayRegister] = useState(false);
+    const [displayLogin, setDisplayLogin] = useState<boolean>(false);
+    const [displayRegister, setDisplayRegister] = useState<boolean>(false);
 
     axios.defaults.withCredentials = true;
     // check if user is logged in
@@ -38,6 +42,14 @@ export default function UserPanel({
             }
         });
     });
+
+    useEffect(() => {
+      if (displayLogin || displayRegister) {
+        setUserPanelOpened(true);
+      } else {
+        setUserPanelOpened(false);
+      }
+    }, [displayLogin, displayRegister, userPanelOpened, setUserPanelOpened]);
 
     const handleLoginClick = () => {
         setDisplayLogin(true);
@@ -88,4 +100,4 @@ export default function UserPanel({
           )}
         </div>
       );
-}
+};
