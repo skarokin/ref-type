@@ -11,7 +11,9 @@
 */
 
 import { useCallback, useEffect, useState } from "react";
-import { calculateWPM, debug } from "../utils/helpers";
+import axios from "axios";
+import { calculateWPM, calculateAccuracyPercentage, debug } from "../utils/helpers";
+import { fetchHighScore, updateHighScore } from "../utils/high-score-handler";
 import useCountdown from "./useCountdown";
 import useTyping from "./useTyping";
 import useWords from "./useWords";
@@ -29,6 +31,10 @@ const useEngine = (userPanelOpened: boolean) => {
   const { cursor, typed, clearTyped, totalTyped, resetTotalTyped, errors, clearErrors } = 
     useTyping(state !== "finish", words, userPanelOpened);
   const [wpm, setWPM] = useState(0);
+  const [auth, setAuth] = useState<boolean>(false);
+  const [username, setUsername] = useState<string>("");
+  const [highScore, setHighScore] = useState<number>(0);
+  const [accuracy, setAccuracy] = useState<number>(0);
 
   const isStarting = state === "start" && cursor > 0;
   const areWordsFinished = cursor === words.length;
@@ -58,6 +64,29 @@ const useEngine = (userPanelOpened: boolean) => {
       debug("time is up...");
       setState("finish");
       setWPM(calculateWPM(totalTyped, errors, COUNTDOWN_SECONDS));
+      setAccuracy(calculateAccuracyPercentage(errors, totalTyped));
+      // fetchHighScore returns a promise, so we need to use .then() to get the data
+      fetchHighScore()
+      .then(({ auth, username, highScore }) => {
+        setAuth(auth);
+        if (auth) {
+          setUsername(username);
+          setHighScore(highScore);
+
+          if (wpm > highScore) {
+            updateHighScore(username, wpm, accuracy)
+            .then(success => {
+              if (success) {
+                console.log("Successfuly updated high score");
+              } else {
+                console.log("Failed to update high score");
+              }
+            })
+            .catch(err => console.error(err));
+          }
+        }
+      })
+      .catch(err => console.error(err));
     }
   }, [timeLeft, state, errors, totalTyped]);
 
