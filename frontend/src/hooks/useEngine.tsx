@@ -11,7 +11,6 @@
 */
 
 import { useCallback, useEffect, useState } from "react";
-import axios from "axios";
 import { calculateWPM, calculateAccuracyPercentage, debug } from "../utils/helpers";
 import { fetchHighScore, updateHighScore } from "../utils/high-score-handler";
 import useCountdown from "./useCountdown";
@@ -20,8 +19,8 @@ import useWords from "./useWords";
 
 export type State = "start" | "run" | "finish";
 
-const NUMBER_OF_WORDS = 5;
-const COUNTDOWN_SECONDS = 7;
+const NUMBER_OF_WORDS = 10;
+const COUNTDOWN_SECONDS = 15;
 
 const useEngine = (userPanelOpened: boolean) => {
   
@@ -60,35 +59,35 @@ const useEngine = (userPanelOpened: boolean) => {
 
   // when the time is up, we've finished
   useEffect(() => {
-    if (!timeLeft && state === "run") {
-      debug("time is up...");
-      setState("finish");
-      setWPM(calculateWPM(totalTyped, errors, COUNTDOWN_SECONDS));
-      setAccuracy(calculateAccuracyPercentage(errors, totalTyped));
-      // fetchHighScore returns a promise, so we need to use .then() to get the data
-      fetchHighScore()
-      .then(({ auth, username, highScore }) => {
-        setAuth(auth);
-        if (auth) {
-          setUsername(username);
-          setHighScore(highScore);
+    const fetchDataAndSetScore = async () => {
+      if (!timeLeft && state === "run") {
+        setState("finish");
+        const newWPM = calculateWPM(totalTyped, errors, COUNTDOWN_SECONDS);
+        const newAccuracy = calculateAccuracyPercentage(errors, totalTyped);
+        setWPM(newWPM);
+        setAccuracy(newAccuracy);
 
-          if (wpm > highScore) {
-            updateHighScore(username, wpm, accuracy)
-            .then(success => {
-              if (success) {
-                console.log("Successfuly updated high score");
-              } else {
-                console.log("Failed to update high score");
-              }
-            })
-            .catch(err => console.error(err));
-          }
+        const data = await fetchHighScore();
+        if (data.auth) {
+          console.log('fetchHighScore was successful'); 
+          setAuth(true);
+          setUsername(data.username);
+          setHighScore(data.highScore);
+
+          if (newWPM > data.highScore) {
+            console.log(`updating high score of ${data.username}: currentWPM: ${newWPM}, highScore: ${data.highScore}`);  
+            const success = await updateHighScore(data.username, newWPM, newAccuracy);
+            if (success) {
+              console.log("updateHighScore success");
+            } else {
+              console.log("updateHighScore failed");
+            }
+          } 
         }
-      })
-      .catch(err => console.error(err));
-    }
-  }, [timeLeft, state, errors, totalTyped]);
+      };
+    };
+    fetchDataAndSetScore();
+  }, [timeLeft, state, errors, totalTyped, auth, username, highScore]);
 
   // if user has typed all words AND final character is a whitespace, generate new words
   useEffect(() => {

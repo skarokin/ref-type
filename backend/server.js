@@ -187,3 +187,18 @@ const logoutHandler = (req, res) => {
     res.clearCookie("token");
     return res.json({Status: "Success"});
 }
+
+const updateScoresHandler = (req, res) => {
+    const sqlUpdateScores = "UPDATE userinfo SET top15_wpm = ?, top15_accuracy = ? WHERE username = ?";
+    const values = [
+        req.body.top15_wpm,
+        req.body.top15_accuracy,
+        req.body.username
+    ];
+    db.query(sqlUpdateScores, values, (err, data) => {
+        if (err) {
+            return res.json({Error: "Error updating scores"});
+        }
+        return res.json({Status: "Success"});
+    });
+}
