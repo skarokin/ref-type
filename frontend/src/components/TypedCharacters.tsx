@@ -6,7 +6,7 @@
 */
 
 import cn from "classnames";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const UserTypings = ({
   userInput,
@@ -55,11 +55,12 @@ const Character = ({
   const isEmpty = actual === "|";
 
   return (
-    <span className={cn({"border-b-2 border-red-300": isLastTypedCharacter})}>
+    <span
+      className={cn({"border-b-2 border-red-300": isLastTypedCharacter})}>
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.2, ease: "easeInOut" }}
+        transition={{ duration: 0.15, ease: "easeInOut" }}
         className={cn({
           "text-rose-500": !isCorrect && !isWhiteSpace,
           "text-primary-400": isCorrect && !isWhiteSpace,

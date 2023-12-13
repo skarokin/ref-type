@@ -23,6 +23,7 @@ export default function UserPanel({
 }) {
     const [auth, setAuth] = useState<boolean>(false);
     const [username, setUsername] = useState<string>("");
+    const [userStats, setUserStats] = useState<string[]>([]);
 
     // the actual forms for login and register are in a separate component
     // those components also handle sending and retrieving data from the server
@@ -37,6 +38,7 @@ export default function UserPanel({
             if (res.data.Status === "Success") {
                 setAuth(true);
                 setUsername(res.data.username);
+                setUserStats([res.data.top15_wpm, res.data.top15_accuracy])
             } else {
                 setAuth(false);
             }
@@ -70,13 +72,17 @@ export default function UserPanel({
         setDisplayLogin(true);
         setDisplayRegister(false);
       }
+
+      const displayUserStats = () => {
+        console.log(userStats);
+      }
     
       return (
         <div className={"fixed top-10 left-20 m-10 flex flex-col items-start"}>
           <FaUserCircle size={40} className={"m-4 text-slate-500"}/>
           {auth ? (
             <div className={"flex flex-col items-start space-y-4"}>
-              <button className={className}>Username</button>
+              <button className={className} onClick={displayUserStats}>{username} stats</button>
               <button className={className} onClick={() => handleLogout(setAuth)}>Hi {username}, Logout?</button>
             </div>
           ) : (
