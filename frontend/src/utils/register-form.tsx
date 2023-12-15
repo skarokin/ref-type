@@ -17,6 +17,13 @@ export default function LoginForm({
         password: "",
         requestType: "register"
     });
+    const [error, setError] = useState<boolean>(false);
+
+    const displayError = () => {
+      if (error) {
+        return <p className="text-red-400 text-sm font-bold mb-2">User already exists</p>
+      }
+    };
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
@@ -27,7 +34,7 @@ export default function LoginForm({
                 console.log("Registration success");
                 onSuccess();
             } else {
-                console.log("User already exists");
+                setError(true);
             }
         })
         .then(err => console.log(err));
@@ -59,6 +66,13 @@ export default function LoginForm({
                 name="password" 
                 onChange={e => setValues({...values, password: e.target.value})}
               />
+            </div>
+            <div>
+              {error && (
+                <div>
+                  {displayError()}
+                </div>
+              )}
             </div>
             <div className="flex items-center justify-between">
               <button 

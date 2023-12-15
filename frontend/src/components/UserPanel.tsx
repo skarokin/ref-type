@@ -10,6 +10,7 @@ import { FaUserCircle } from "react-icons/fa";
 import LoginForm from "../utils/login-form";
 import RegisterForm from "../utils/register-form";
 import handleLogout from "../utils/logout";
+import UserStats from "../utils/user-stats";
 import axios from "axios";
 
 export default function UserPanel({
@@ -29,6 +30,7 @@ export default function UserPanel({
     // those components also handle sending and retrieving data from the server
     const [displayLogin, setDisplayLogin] = useState<boolean>(false);
     const [displayRegister, setDisplayRegister] = useState<boolean>(false);
+    const [displayStats, setDisplayStats] = useState<boolean>(false);
 
     axios.defaults.withCredentials = true;
     // check if user is logged in
@@ -56,11 +58,13 @@ export default function UserPanel({
     const handleLoginClick = () => {
         setDisplayLogin(true);
         setDisplayRegister(false);
+        setDisplayStats(false);
       };
       
       const handleRegisterClick = () => {
         setDisplayLogin(false);
         setDisplayRegister(true);
+        setDisplayStats(false);
       };
     
       const handleLoginSuccess = () => {
@@ -73,16 +77,25 @@ export default function UserPanel({
         setDisplayRegister(false);
       }
 
-      const displayUserStats = () => {
-        console.log(userStats);
+      const handleUserStatsClick = () => {
+        setDisplayStats(true);
       }
+
     
       return (
         <div className={"fixed top-10 left-20 m-10 flex flex-col items-start"}>
           <FaUserCircle size={40} className={"m-4 text-slate-500"}/>
           {auth ? (
             <div className={"flex flex-col items-start space-y-4"}>
-              <button className={className} onClick={displayUserStats}>{username} stats</button>
+              {!displayStats && <button className={className} onClick={handleUserStatsClick}>{username}</button>}
+              {displayStats && (
+                <div style={{ marginLeft: '20px' }}>
+                  <UserStats 
+                    userStats={userStats}
+                    onCancel={() => setDisplayStats(false)}
+                  />
+                </div>
+              )}
               <button className={className} onClick={() => handleLogout(setAuth)}>Hi {username}, Logout?</button>
             </div>
           ) : (

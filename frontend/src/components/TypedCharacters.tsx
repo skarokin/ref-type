@@ -6,7 +6,7 @@
 */
 
 import cn from "classnames";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 const UserTypings = ({
   userInput,
