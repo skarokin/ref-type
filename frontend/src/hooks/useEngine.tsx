@@ -20,7 +20,7 @@ import useWords from "./useWords";
 export type State = "start" | "run" | "finish";
 
 const NUMBER_OF_WORDS = 10;
-const COUNTDOWN_SECONDS = 15;
+const COUNTDOWN_SECONDS = 5;
 
 const useEngine = (userPanelOpened: boolean) => {
   
@@ -34,6 +34,7 @@ const useEngine = (userPanelOpened: boolean) => {
   const [username, setUsername] = useState<string>("");
   const [highScore, setHighScore] = useState<number>(0);
   const [accuracy, setAccuracy] = useState<number>(0);
+  const [showConfetti, setShowConfetti] = useState<boolean>(false);
 
   const isStarting = state === "start" && cursor > 0;
   const areWordsFinished = cursor === words.length;
@@ -54,6 +55,7 @@ const useEngine = (userPanelOpened: boolean) => {
     if (isStarting) {
       setState("run");
       startCountdown();
+      setShowConfetti(false);
     }
   }, [isStarting, startCountdown]);
 
@@ -79,6 +81,7 @@ const useEngine = (userPanelOpened: boolean) => {
             const success = await updateHighScore(data.username, newWPM, newAccuracy);
             if (success) {
               console.log("updateHighScore success");
+              setShowConfetti(true);
             } else {
               console.log("updateHighScore failed");
             }
@@ -98,7 +101,7 @@ const useEngine = (userPanelOpened: boolean) => {
     }
   }, [clearTyped, areWordsFinished, updateWords, typed]);
 
-  return { state, words, typed, errors, restart, timeLeft, totalTyped, wpm };
+  return { state, words, typed, errors, restart, timeLeft, totalTyped, wpm, showConfetti };
 };
 
 export default useEngine;

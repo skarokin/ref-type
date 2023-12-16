@@ -7,16 +7,21 @@ import useEngine from "./hooks/useEngine";
 import UserPanel from "./components/UserPanel";
 import { calculateAccuracyPercentage } from "./utils/helpers";
 import { VscGithub } from "react-icons/vsc";
+import Confetti from "react-dom-confetti";
+import Leaderboard from "./components/Leaderboard";
 
 const App = () => {
   // defined in a parent so we can pass to useEngine
   const [userPanelOpened, setUserPanelOpened] = useState<boolean>(false);
 
-  const { words, typed, timeLeft, errors, state, restart, totalTyped, wpm} =
+  const { words, typed, timeLeft, errors, state, restart, totalTyped, wpm, showConfetti } =
     useEngine(userPanelOpened);
 
   return (
     <>
+      <Leaderboard 
+        className={"fixed top-10 right-20 m-10 flex flex-col items-start"}
+      />
       <UserPanel
         setUserPanelOpened={setUserPanelOpened}
         userPanelOpened={userPanelOpened}
@@ -30,6 +35,9 @@ const App = () => {
           words={words}
           userInput={typed}
         />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <Confetti active={showConfetti} />
+        </div>
       </WordsContainer>
       <RestartButton
         className={"mx-auto mt-20 text-slate-500"}
