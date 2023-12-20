@@ -7,6 +7,4 @@ Used this amazing repository https://github.com/gionathas/speed-typing to set up
 1. Cannot set time (15s/60s is what i want)
 
 # to-be-done
-1. Store user info (userID, best15, best60)
-   - Ensure that user info is only stored if a user is logged in
-2. Display leaderboard (top 100 in 15s, top 100 in 60s)
+1. Display top 100 leaderboard
