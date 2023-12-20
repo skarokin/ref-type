@@ -20,12 +20,11 @@ import useWords from "./useWords";
 export type State = "start" | "run" | "finish";
 
 const NUMBER_OF_WORDS = 10;
-const COUNTDOWN_SECONDS = 5;
 
-const useEngine = (userPanelOpened: boolean) => {
+const useEngine = (userPanelOpened: boolean, countdown: number) => {
   
   const [state, setState] = useState<State>("start");
-  const { timeLeft, startCountdown, resetCountdown } = useCountdown(COUNTDOWN_SECONDS);
+  const { timeLeft, startCountdown, resetCountdown } = useCountdown(countdown);
   const { words, updateWords } = useWords(NUMBER_OF_WORDS);
   const { cursor, typed, clearTyped, totalTyped, resetTotalTyped, errors, clearErrors } = 
     useTyping(state !== "finish", words, userPanelOpened);
@@ -64,7 +63,7 @@ const useEngine = (userPanelOpened: boolean) => {
     const fetchDataAndSetScore = async () => {
       if (!timeLeft && state === "run") {
         setState("finish");
-        const newWPM = calculateWPM(totalTyped, errors, COUNTDOWN_SECONDS);
+        const newWPM = calculateWPM(totalTyped, errors, countdown);
         const newAccuracy = calculateAccuracyPercentage(errors, totalTyped);
         setWPM(newWPM);
         setAccuracy(newAccuracy);

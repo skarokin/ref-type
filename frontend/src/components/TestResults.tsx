@@ -32,44 +32,47 @@ const Results = ({
     <motion.ul
       initial={initial}
       animate={animate}
-      className={`flex flex-col items-center text-primary-400 space-y-3 ${className}`}
+      className={`flex flex-col items-center space-y-3 ${className}`}
     >
       <motion.li
         initial={initial}
         animate={animate} 
         transition={{ duration: 0.3 }}
-        className="text-xl font-semibold"
+        className="text-xl font-semibold text-mainColor"
       >
         Results
       </motion.li>
       <motion.li
         initial={initial}
         animate={animate}
+        transition={{ duration: 0.3, delay: 2.0 }}
+      >
+        <span className="text-subColorAlt">WPM: </span>
+        <span className="text-mainColor">{wpm}</span>
+      </motion.li>
+      <motion.li
+        initial={initial}
+        animate={animate}
         transition={{ duration: 0.3, delay: 0.5 }}
       >
-        Accuracy: {formatPercentage(accuracyPercentage)}
+        <span className="text-subColorAlt">Accuracy: </span> 
+        <span className="text-mainColor">{formatPercentage(accuracyPercentage)}</span>
       </motion.li>
       <motion.li
         initial={initial}
         animate={animate}
         transition={{ duration: 0.3, delay: 1 }}
-        className="text-red-500"
       >
-        Errors: {errors}
+        <span className="text-subColorAlt">Errors: </span> 
+        <span className="text-mainColor">{errors}</span>
       </motion.li>
       <motion.li
         initial={initial}
         animate={animate}
         transition={{ duration: 0.3, delay: 1.5 }}
       >
-        Total Typed: {total}
-      </motion.li>
-      <motion.li
-        initial={initial}
-        animate={animate}
-        transition={{ duration: 0.3, delay: 2.0 }}
-      >
-        WPM: {wpm}
+        <span className="text-subColorAlt">Total Typed: </span>
+        <span className="text-mainColor">{total}</span>
       </motion.li>
     </motion.ul>
   );

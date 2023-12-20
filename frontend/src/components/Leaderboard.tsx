@@ -7,7 +7,7 @@ export default function Leaderboard({
 }) {
     return (
         <div className={className}>
-            <FaCrown size={40} className={"m-4 text-slate-500 hover:text-slate-300"}/> 
+            <FaCrown size={40} className={"m-4 text-subColor hover:text-mainColor"}/> 
         </div>
     )
 }

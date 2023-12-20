@@ -56,15 +56,15 @@ const Character = ({
 
   return (
     <span
-      className={cn({"border-b-2 border-red-300": isLastTypedCharacter})}>
+      className={cn({"border-b-2 border-mainColor": isLastTypedCharacter})}>
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.15, ease: "easeInOut" }}
         className={cn({
-          "text-rose-500": !isCorrect && !isWhiteSpace,
-          "text-primary-400": isCorrect && !isWhiteSpace,
-          "bg-rose-500/50": !isCorrect && isWhiteSpace && !isEmpty,
+          "text-mainColor": !isCorrect && !isWhiteSpace,
+          "text-textCorrect": isCorrect && !isWhiteSpace,
+          "bg-mainColor/50": !isCorrect && isWhiteSpace && !isEmpty,
           "text-opacity-0": isEmpty,
         })}
       >

@@ -13,9 +13,10 @@ import Leaderboard from "./components/Leaderboard";
 const App = () => {
   // defined in a parent so we can pass to useEngine
   const [userPanelOpened, setUserPanelOpened] = useState<boolean>(false);
+  const [timer, setTimer] = useState<number>(15);
 
   const { words, typed, timeLeft, errors, state, restart, totalTyped, wpm, showConfetti } =
-    useEngine(userPanelOpened);
+    useEngine(userPanelOpened, timer);
 
   return (
     <>
@@ -40,7 +41,7 @@ const App = () => {
         </div>
       </WordsContainer>
       <RestartButton
-        className={"mx-auto mt-20 text-slate-500"}
+        className={"mx-auto mt-20 text-subColor"}
         onRestart={restart}
       />
       <TestResults
@@ -51,7 +52,7 @@ const App = () => {
         total={totalTyped}
         wpm={wpm}
       />
-      <div className={"fixed bottom-10 left-1/2 flex items-center justify-center transform -translate-x-1/2 text-slate-500"}>
+      <div className={"fixed bottom-10 left-1/2 flex items-center justify-center transform -translate-x-1/2 text-subColor"}>
         <VscGithub className={"mr-2"} /> 
         Github 
       </div>
@@ -68,7 +69,7 @@ const WordsContainer = ({ children }: { children: React.ReactNode }) => {
 };
 
 const CountdownTimer = ({ timeLeft }: { timeLeft: number }) => {
-  return <h2 className="text-primary-300 font-medium">Time: {timeLeft}</h2>;
+  return <h2 className="text-mainColor font-medium">Time: {timeLeft}</h2>;
 };
 
 export default App;

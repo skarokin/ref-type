@@ -16,7 +16,7 @@ import axios from "axios";
 export default function UserPanel({
     userPanelOpened,
     setUserPanelOpened,
-    className = "text-lg font-bold hover:bg-slate-700/50 text-slate-500 py-1 px-2 rounded",
+    className = "text-lg font-bold hover:bg-subColor/25 text-subColor block rounded px-4 py-2",
 }: {
     userPanelOpened: boolean;
     setUserPanelOpened: React.Dispatch<React.SetStateAction<boolean>>;
@@ -84,7 +84,7 @@ export default function UserPanel({
     
       return (
         <div className={"fixed top-10 left-20 m-10 flex flex-col items-start"}>
-          <FaUserCircle size={40} className={"m-4 text-slate-500"}/>
+          <FaUserCircle size={40} className={"m-4 text-subColor"}/>
           {auth ? (
             <div className={"flex flex-col items-start space-y-4"}>
               {!displayStats && <button className={className} onClick={handleUserStatsClick}>{username}</button>}

@@ -122,6 +122,11 @@ app.post('/', (req, res) => {
 */
 
 const registerHandler = (req, res) => {
+
+    if (!req.body.username || !req.body.password) {
+        return res.json({Error: "Missing username or password"});
+    }
+    
     const sqlCheckExistingUser = "SELECT * FROM userinfo WHERE username = ?";
 
     db.query(sqlCheckExistingUser, [req.body.username], (err, data) => {
