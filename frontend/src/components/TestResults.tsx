@@ -45,7 +45,7 @@ const Results = ({
       <motion.li
         initial={initial}
         animate={animate}
-        transition={{ duration: 0.3, delay: 2.0 }}
+        transition={{ duration: 0.3, delay: 0.5}}
       >
         <span className="text-subColorAlt">WPM: </span>
         <span className="text-mainColor">{wpm}</span>
@@ -53,7 +53,7 @@ const Results = ({
       <motion.li
         initial={initial}
         animate={animate}
-        transition={{ duration: 0.3, delay: 0.5 }}
+        transition={{ duration: 0.3, delay: 1.0 }}
       >
         <span className="text-subColorAlt">Accuracy: </span> 
         <span className="text-mainColor">{formatPercentage(accuracyPercentage)}</span>
@@ -61,7 +61,7 @@ const Results = ({
       <motion.li
         initial={initial}
         animate={animate}
-        transition={{ duration: 0.3, delay: 1 }}
+        transition={{ duration: 0.3, delay: 1.5 }}
       >
         <span className="text-subColorAlt">Errors: </span> 
         <span className="text-mainColor">{errors}</span>
@@ -69,7 +69,7 @@ const Results = ({
       <motion.li
         initial={initial}
         animate={animate}
-        transition={{ duration: 0.3, delay: 1.5 }}
+        transition={{ duration: 0.3, delay: 2.0 }}
       >
         <span className="text-subColorAlt">Total Typed: </span>
         <span className="text-mainColor">{total}</span>

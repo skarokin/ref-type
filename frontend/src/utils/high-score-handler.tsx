@@ -11,35 +11,44 @@ import axios from "axios";
 
 // retrieves high score
 export const fetchHighScore = async () => {
-    return axios.get("http://localhost:8081/")
-      .then((res) => {
-        if (res.data.Status === "Success") {
-          return {
-            auth: true,
-            username: res.data.username,
-            highScore: res.data.top15_wpm,
-          };
-        } else {
-          return {
-            auth: false
-          }
-        }
-      });
+  try {
+    console.log("fetching high score...")
+    const res = await axios.get("http://localhost:8081/");
+
+    if (res.data.Status === "Success") {
+      console.log("high score fetched...");
+      return {
+        auth: true,
+        username: res.data.username,
+        highScore: res.data.top15_wpm,
+      };
+    } else {
+      return {
+        auth: false,
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching high score:", error);
+    return {
+      auth: false,
+      error: "Failed to fetch high score",
+    };
+  }
 };
 
 // updates high score
-export const updateHighScore = (username: string, wpm: number, accuracy: number) => {
-    return axios.post("http://localhost:8081/", {
+export const updateHighScore = async (username: string, wpm: number, accuracy: number) => {
+  try {
+    const res = await axios.post("http://localhost:8081/", {
       requestType: "update",
       username: username,
       top15_wpm: wpm,
-      top15_accuracy: accuracy
-    })
-    .then((res) => {
-      if (res.data.Status === "Success") {
-        return true;
-      } else {
-        return false;
-      }
+      top15_accuracy: accuracy,
     });
-}
+
+    return res.data.Status === "Success";
+  } catch (error) {
+      console.error("Error updating high score:", error);
+      return false; // Or handle the error differently
+  }
+};

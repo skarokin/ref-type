@@ -4,6 +4,9 @@ import cors from "cors";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+
+dotenv.config({ path: '.env.local' });
 
 const salt = 10;
 
@@ -21,10 +24,10 @@ app.use(cookieParser());
 // create a connection to the mysql database
 // in real app, the password should be stored in .env file
 const db = mysql.createConnection({ 
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "ref_type",
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_DATABASE,
 });
 
 // run server on port 8081
@@ -41,13 +44,14 @@ app.listen(8081, () => {
 // function to verify user is logged in
 const verifyUser = (req, res, next) => {
     // read the JWT token form the cookies sent with the request
+    console.log("verifyUser is running...")
     const token = req.cookies.token;
     if (!token) {
         return res.json({Error: "User not authenticated"});
     } 
     // verify the JWT token using the secret key
     // in practice, the secret key should be stored in .env file
-    jwt.verify(token, "jwt-secret-key", (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
         if (err) {
             return res.json({Error: "Token is not valid"});
         }
@@ -63,6 +67,7 @@ const verifyUser = (req, res, next) => {
 // when control is passed from verifyUser to this function, username is attached to the request object
 const fetchTopScores = (req, res, next) => {
     // if user is not logged in, we can't fetch scores
+    console.log("fetchTopScores is running...")
     if (!req.username) {
         return res.json({Error: "User not authenticated"});
     }
@@ -138,23 +143,27 @@ const registerHandler = (req, res) => {
             return res.json({Error: "Username already exists"});
         }
         // create user
-        const sqlCreateUser = "INSERT INTO userinfo (`username`, `password`) VALUES (?, ?)";
+        const sqlCreateUser = "INSERT INTO userinfo (`username`, `password`, `top15_wpm`, `top15_accuracy`) VALUES (?, ?, ?, ?)";
         bcrypt.hash(req.body.password.toString(), salt, (err, hash) => {
             if (err) {
                 return res.json({Error: "Error hashing password"});
             }
             const values = [
                 req.body.username,
-                hash
+                hash,
+                0,
+                0,
             ];
             db.query(sqlCreateUser, values, (err, data) => {
                 if (err) {
+                    console.error(err);
                     return res.json({Error: "Error creating user"});
                 }
                 return res.json({Status: "Success"});
             });
         });
     });
+
 }
 
 const loginHandler = (req, res) => {
@@ -174,7 +183,7 @@ const loginHandler = (req, res) => {
                 if (response) {
                     // generate a token (in real app, secret key should be an environment variable)
                     const username = data[0].username;
-                    const token = jwt.sign({username}, "jwt-secret-key", {expiresIn: '1d'});
+                    const token = jwt.sign({username}, process.env.JWT_SECRET_KEY, {expiresIn: '1d'});
                     // store the token in a cookie
                     res.cookie("token", token);
                     return res.json({Status: "Success"});

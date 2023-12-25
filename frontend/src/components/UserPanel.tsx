@@ -45,7 +45,7 @@ export default function UserPanel({
                 setAuth(false);
             }
         });
-    });
+    }, [userPanelOpened]);
 
     useEffect(() => {
       if (displayLogin || displayRegister) {

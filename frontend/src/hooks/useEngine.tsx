@@ -58,38 +58,39 @@ const useEngine = (userPanelOpened: boolean, countdown: number) => {
     }
   }, [isStarting, startCountdown]);
 
-  // when the time is up, we've finished
+  // when the time is up and we are running, finish game
   useEffect(() => {
-    const fetchDataAndSetScore = async () => {
-      if (!timeLeft && state === "run") {
-        setState("finish");
-        const newWPM = calculateWPM(totalTyped, errors, countdown);
-        const newAccuracy = calculateAccuracyPercentage(errors, totalTyped);
-        setWPM(newWPM);
-        setAccuracy(newAccuracy);
+    if (!timeLeft && state === "run") {
+      setState("finish");
+      fetchDataAndSetScore();
+    }
+  }, [timeLeft, state]);
 
-        const data = await fetchHighScore();
-        if (data.auth) {
-          console.log('fetchHighScore was successful'); 
-          setAuth(true);
-          setUsername(data.username);
-          setHighScore(data.highScore);
+  const fetchDataAndSetScore = async () => {
+    const newWPM = calculateWPM(totalTyped, errors, countdown);
+    const newAccuracy = calculateAccuracyPercentage(errors, totalTyped);
+    setWPM(newWPM);
+    setAccuracy(newAccuracy);
 
-          if (newWPM > data.highScore) {
-            console.log(`updating high score of ${data.username}: currentWPM: ${newWPM}, highScore: ${data.highScore}`);  
-            const success = await updateHighScore(data.username, newWPM, newAccuracy);
-            if (success) {
-              console.log("updateHighScore success");
-              setShowConfetti(true);
-            } else {
-              console.log("updateHighScore failed");
-            }
-          } 
+    const data = await fetchHighScore();
+    if (data.auth) {
+      console.log('fetchHighScore was successful'); 
+      setAuth(true);
+      setUsername(data.username);
+      setHighScore(data.highScore);
+
+      if (newWPM > data.highScore) {
+        console.log(`updating high score of ${data.username}: currentWPM: ${newWPM}, highScore: ${data.highScore}`);  
+        const success = await updateHighScore(data.username, newWPM, newAccuracy);
+        if (success) {
+          console.log("updateHighScore success");
+          setShowConfetti(true);
+        } else {
+          console.log("updateHighScore failed");
         }
-      };
-    };
-    fetchDataAndSetScore();
-  }, [timeLeft, state, errors, totalTyped, auth, username, highScore]);
+      } 
+    }
+  };
 
   // if user has typed all words AND final character is a whitespace, generate new words
   useEffect(() => {
