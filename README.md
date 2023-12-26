@@ -1,7 +1,7 @@
 # ref-type
 First full-stack project
 
-Huge thanks to this repository https://github.com/gionathas/speed-typing for helping me set up the actual typing game
+Huge thanks to this repository https://github.com/gionathas/speed-typing for helping to set up the base typing game logic
 
 # immediate-concerns
 1. Only one test... i want both 15s and 60s
