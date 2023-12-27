@@ -16,7 +16,7 @@ import axios from "axios";
 export default function UserPanel({
     userPanelOpened,
     setUserPanelOpened,
-    className = "text-lg font-bold hover:bg-subColor/25 text-subColor block rounded px-4 py-2",
+    className = "text-lg font-bold transition-colors duration-300 ease-in-out hover:text-mainColor text-subColor block rounded px-4 py-2",
 }: {
     userPanelOpened: boolean;
     setUserPanelOpened: React.Dispatch<React.SetStateAction<boolean>>;
@@ -56,67 +56,67 @@ export default function UserPanel({
     }, [displayLogin, displayRegister, userPanelOpened, setUserPanelOpened]);
 
     const handleLoginClick = () => {
-        setDisplayLogin(true);
-        setDisplayRegister(false);
-        setDisplayStats(false);
-      };
+      setDisplayLogin(true);
+      setDisplayRegister(false);
+      setDisplayStats(false);
+    };
       
-      const handleRegisterClick = () => {
-        setDisplayLogin(false);
-        setDisplayRegister(true);
-        setDisplayStats(false);
-      };
+    const handleRegisterClick = () => {
+      setDisplayLogin(false);
+      setDisplayRegister(true);
+      setDisplayStats(false);
+    };
     
-      const handleLoginSuccess = () => {
-        setDisplayLogin(false);
-        setDisplayRegister(false);
-      }
+    const handleLoginSuccess = () => {
+      setDisplayLogin(false);
+      setDisplayRegister(false);
+    };
     
-      const handleRegisterSuccess = () => {
-        setDisplayLogin(true);
-        setDisplayRegister(false);
-      }
+    const handleRegisterSuccess = () => {
+      setDisplayLogin(true);
+      setDisplayRegister(false);
+    };
 
-      const handleUserStatsClick = () => {
-        setDisplayStats(true);
-      }
+    const handleUserStatsClick = () => {
+      setDisplayStats(true);
+    };
 
     
-      return (
-        <div className={"fixed top-10 left-20 m-10 flex flex-col items-start"}>
-          <FaUserCircle size={40} className={"m-4 text-subColor"}/>
-          {auth ? (
-            <div className={"flex flex-col items-start space-y-4"}>
-              {!displayStats && <button className={className} onClick={handleUserStatsClick}>{username}</button>}
-              {displayStats && (
-                <div style={{ marginLeft: '20px' }}>
-                  <UserStats 
-                    userStats={userStats}
-                    onCancel={() => setDisplayStats(false)}
-                  />
-                </div>
-              )}
-              <button className={className} onClick={() => handleLogout(setAuth)}>Hi {username}, Logout?</button>
-            </div>
-          ) : (
-            <div className="flex flex-col items-start space-y-4">
-              {!displayRegister && <button className={className} onClick={handleLoginClick}>Login</button>}
-              {displayLogin && (
-                <div style={{ marginLeft: '20px' }}>
-                  <LoginForm 
-                    onSuccess={handleLoginSuccess} 
-                    onCancel={() => setDisplayLogin(false)}
-                  />
-                </div>
-              )}
-              {!displayLogin && <button className={className} onClick={handleRegisterClick}>Register</button>}
-              {displayRegister && (
-                <div style={{ marginLeft: '20px' }}>
-                   <RegisterForm onSuccess={handleRegisterSuccess} onCancel={() => setDisplayRegister(false)}/> 
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      );
+    return (
+      <div className={"fixed top-10 left-20 m-10 flex flex-col items-start"}>
+        <FaUserCircle size={40} className={"m-4 text-subColor"}/>
+        {auth ? (
+          <div className={"flex flex-col items-start space-y-4"}>
+            {!displayStats && <button className={className} onClick={handleUserStatsClick}>{username}</button>}
+            {displayStats && (
+              <div style={{ marginLeft: '20px' }}>
+                <UserStats 
+                  userStats={userStats}
+                  onCancel={() => setDisplayStats(false)}
+                />
+              </div>
+            )}
+            <button className={className} onClick={() => handleLogout(setAuth)}>Hi {username}, Logout?</button>
+          </div>
+        ) : (
+          <div className="flex flex-col items-start space-y-4">
+            {!displayRegister && <button className={className} onClick={handleLoginClick}>Login</button>}
+            {displayLogin && (
+              <div style={{ marginLeft: '20px' }}>
+                <LoginForm 
+                  onSuccess={handleLoginSuccess} 
+                  onCancel={() => setDisplayLogin(false)}
+                />
+              </div>
+            )}
+            {!displayLogin && <button className={className} onClick={handleRegisterClick}>Register</button>}
+            {displayRegister && (
+              <div style={{ marginLeft: '20px' }}>
+                  <RegisterForm onSuccess={handleRegisterSuccess} onCancel={() => setDisplayRegister(false)}/> 
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
 };

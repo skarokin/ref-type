@@ -23,6 +23,7 @@ export const fetchHighScore = async () => {
         highScore: res.data.top15_wpm,
       };
     } else {
+      console.log("user not logged in...");
       return {
         auth: false,
       };
