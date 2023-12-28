@@ -12,6 +12,7 @@ const Results = ({
   accuracyPercentage,
   total,
   wpm,
+  isNewPB,
   className = "",
 }: {
   state: State;
@@ -19,6 +20,7 @@ const Results = ({
   accuracyPercentage: number;
   total: number;
   wpm: number;
+  isNewPB: boolean,
   className?: string;
 }) => {
   if (state !== "finish") {
@@ -47,7 +49,7 @@ const Results = ({
         animate={animate}
         transition={{ duration: 0.3, delay: 0.5}}
       >
-        <span className="text-subColorAlt">WPM: </span>
+        {isNewPB ? <span className="text-subColorAlt">New PB: </span> : <span className="text-subColorAlt">WPM: </span>}
         <span className="text-mainColor">{wpm}</span>
       </motion.li>
       <motion.li

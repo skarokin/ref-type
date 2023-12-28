@@ -90,7 +90,7 @@ const fetchTopScores = (req, res, next) => {
 
 // GET api for user verification and fetching wpm/accuracy of top15/top60
 // uses middleware verifyUser and fetchTopScores
-app.get('/', verifyUser, fetchTopScores, (req, res) => {
+app.get('/userinfo', verifyUser, fetchTopScores, (req, res) => {
     return res.json({
         Status: "Success", 
         username: req.username,
@@ -99,26 +99,52 @@ app.get('/', verifyUser, fetchTopScores, (req, res) => {
     });
 });
 
-// POST api for registration, login, logout, and updating top15/top60
-app.post('/', (req, res) => {
-    const requestType = req.body.requestType;
-    switch(requestType) {
-        case "register":
-            registerHandler(req, res);
-            break;
-        case "login":
-            loginHandler(req, res);
-            break;
-        case "logout":
-            logoutHandler(req, res);
-            break;
-        case "update":
-            updateScoresHandler(req, res);
-            break;
-        default:
-            return res.json({Error: "Invalid request type"});
-    }
+// leaderboard function; fetches top 10 scores from database every 5 minutes
+// and stores it as an array 
+let leaderboard = [];
+
+function updateLeaderboard() {
+    const sqlFetchTopScores = "SELECT username, top15_wpm, top15_accuracy FROM userinfo ORDER BY top15_wpm DESC LIMIT 10";
+    db.query(sqlFetchTopScores, (err, data) => {
+        if (err) {
+            console.error("Error querying database", err);
+            return;
+        } 
+
+        leaderboard = data;
+
+        setTimeout(updateLeaderboard, 5 * 60 * 1000); // update leaderboard every 5 minutes
+    });
+};
+
+updateLeaderboard();
+
+// GET api for fetching current leaderboard status 
+app.get('/leaderboard', (req, res ) => {
+    return res.json({Status: "Success", leaderboard: leaderboard});
 });
+
+/*
+*  ================================================================================
+*  POST APIS FOR LOGIN, REGISTER, LOGOUT, UPDATE
+*  ================================================================================
+*/
+
+app.post('/login', (req, res) => {
+    loginHandler(req, res);
+});
+
+app.post('/register', (req, res) => {
+    registerHandler(req, res);
+});
+
+app.post('/logout', (req, res) => {
+    logoutHandler(req, res);
+});
+
+app.post('/update', (req, res) => {
+    updateScoresHandler(req, res);
+})
 
 /* 
 *  ================================================================================

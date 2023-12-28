@@ -15,7 +15,6 @@ export default function LoginForm({
     const [values, setValues] = useState({
         username: "",
         password: "",
-        requestType: "register"
     });
     const [error, setError] = useState<boolean>(false);
 
@@ -28,7 +27,7 @@ export default function LoginForm({
     const handleSubmit = (e: any) => {
         e.preventDefault();
         // call our server to log the user in
-        axios.post("http://localhost:8081/", values)
+        axios.post("http://localhost:8081/register", values)
         .then(res => {
             if (res.data.Status === "Success") {
                 console.log("Registration success");
@@ -38,11 +37,11 @@ export default function LoginForm({
                 setError(true);
             }
         })
-        .then(err => console.log(err));
+        .catch(err => console.log(err));
     }
 
     return (
-        <div className="flex flex-col items-center justify-center">
+        <div className="absolute flex flex-col items-center justify-center w-64">
           <form onSubmit={handleSubmit} className="w-full max-w-sm bg-subColor shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <div className="mb-4">
               <label className="block text-textCorrect text-sm font-bold mb-2" htmlFor="username">

@@ -4,7 +4,7 @@
 *  - onRestart() function is defined in useEngine
 */
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { MdRefresh } from "react-icons/md";
 
 const RestartButton = ({
@@ -26,7 +26,7 @@ const RestartButton = ({
     <button
       tabIndex={-1} // to prevent focus
       ref={buttonRef}
-      className={`block rounded px-8 py-2 transition-colors duration-300 ease-in-out hover:text-mainColor ${className}`}
+      className={`block rounded px-4 py-2 transition-colors duration-300 ease-in-out hover:text-mainColor ${className}`}
       onClick={handleClick}
     >
       <MdRefresh className="w-6 h-6" />

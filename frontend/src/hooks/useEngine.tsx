@@ -19,20 +19,16 @@ import useWords from "./useWords";
 
 export type State = "start" | "run" | "finish";
 
-const NUMBER_OF_WORDS = 10;
+const NUMBER_OF_WORDS = 23;
 
-const useEngine = (userPanelOpened: boolean, countdown: number) => {
+const useEngine = (userPanelOpened: boolean, leaderboardOpened: boolean, countdown: number) => {
   
   const [state, setState] = useState<State>("start");
   const { timeLeft, startCountdown, resetCountdown } = useCountdown(countdown);
   const { words, updateWords } = useWords(NUMBER_OF_WORDS);
   const { cursor, typed, clearTyped, totalTyped, resetTotalTyped, errors, clearErrors } = 
-    useTyping(state !== "finish", words, userPanelOpened);
+    useTyping(state !== "finish", words, userPanelOpened, leaderboardOpened);
   const [wpm, setWPM] = useState(0);
-  const [auth, setAuth] = useState<boolean>(false);
-  const [username, setUsername] = useState<string>("");
-  const [highScore, setHighScore] = useState<number>(0);
-  const [accuracy, setAccuracy] = useState<number>(0);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
 
   const isStarting = state === "start" && cursor > 0;
@@ -70,14 +66,10 @@ const useEngine = (userPanelOpened: boolean, countdown: number) => {
     const newWPM = calculateWPM(totalTyped, errors, countdown);
     const newAccuracy = calculateAccuracyPercentage(errors, totalTyped);
     setWPM(newWPM);
-    setAccuracy(newAccuracy);
 
     const data = await fetchHighScore();
     if (data.auth) {
       console.log('fetchHighScore was successful'); 
-      setAuth(true);
-      setUsername(data.username);
-      setHighScore(data.highScore);
 
       if (newWPM > data.highScore) {
         console.log(`updating high score of ${data.username}: currentWPM: ${newWPM}, highScore: ${data.highScore}`);  
