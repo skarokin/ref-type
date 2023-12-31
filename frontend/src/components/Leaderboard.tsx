@@ -57,10 +57,10 @@ export default function Leaderboard({
                 return () => clearInterval(timer); // cleanup on unmount
             }
     
-            // if timer is up, fetch new leaderboard and reset timer 
+            // if timer is up, fetch new leaderboard and reset timer to 4:59
             if (timeToNextUpdate <= 0) {   
                 handleLeaderboardClick();
-                setTimeToNextUpdate(5*60*1000);
+                setTimeToNextUpdate((4*60*1000) + (59*1000));
             }
         } else {
             // if leaderboard unmounts, reset timer so it can be fetched again when opened (to ensure accuracy)
