@@ -21,8 +21,7 @@ app.use(cors({
 }));
 app.use(cookieParser());
 
-// create a connection to the mysql database
-// in real app, the password should be stored in .env file
+// create a connection to the mysql database    
 const db = mysql.createConnection({ 
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -49,16 +48,19 @@ const verifyUser = (req, res, next) => {
     if (!token) {
         return res.json({Error: "User not authenticated"});
     } 
-    // verify the JWT token using the secret key
-    // in practice, the secret key should be stored in .env file
+    // verify the JWT token using the secret key (stored in .env file)
     jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
         if (err) {
             return res.json({Error: "Token is not valid"});
         }
+
+        if (!decoded.username || decoded.username.trim() === "") {
+            return res.json({Error: "Invalid username"});
+        }
         // if token is valid, username from the decoded payload is attached to request object
         // this allows subseqeuent middleware functions and route handlers to access the username
         req.username = decoded.username;
-        // passes control to the next middleware function in the stack
+        // pass control to the next middleware function in the stack
         next();
     });
 };
@@ -102,6 +104,8 @@ app.get('/userinfo', verifyUser, fetchTopScores, (req, res) => {
 // leaderboard function; fetches top 10 scores from database every 5 minutes
 // and stores it as an array 
 let leaderboard = [];
+let lastUpdate = Date.now();
+const updateInterval = 5*60*1000;
 
 function updateLeaderboard() {
     const sqlFetchTopScores = "SELECT username, top15_wpm, top15_accuracy FROM userinfo ORDER BY top15_wpm DESC LIMIT 10";
@@ -112,8 +116,9 @@ function updateLeaderboard() {
         } 
 
         leaderboard = data;
+        lastUpdate = Date.now();
 
-        setTimeout(updateLeaderboard, 5 * 60 * 1000); // update leaderboard every 5 minutes
+        setTimeout(updateLeaderboard, updateInterval); // update leaderboard every 5 minutes
     });
 };
 
@@ -122,6 +127,10 @@ updateLeaderboard();
 // GET api for fetching current leaderboard status 
 app.get('/leaderboard', (req, res ) => {
     return res.json({Status: "Success", leaderboard: leaderboard});
+});
+
+app.get('/timeLeft', (req, res) => {
+    return res.json({Status: "Success", timeLeft: updateInterval - (Date.now() - lastUpdate)})
 });
 
 /*

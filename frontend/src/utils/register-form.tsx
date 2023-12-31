@@ -42,7 +42,7 @@ export default function LoginForm({
 
     return (
         <div className="absolute flex flex-col items-center justify-center w-64">
-          <form onSubmit={handleSubmit} className="w-full max-w-sm bg-subColor shadow-md rounded px-8 pt-6 pb-8 mb-4">
+          <form onSubmit={handleSubmit} className="w-full max-w-sm bg-bgColor ring-2 ring-inset ring-subColor/50 shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <div className="mb-4">
               <label className="block text-textCorrect text-sm font-bold mb-2" htmlFor="username">
                 Username
@@ -80,9 +80,11 @@ export default function LoginForm({
                 Register
               </button>
               <button 
-                className="bg-blue-500 transition-colors duration-300 ease-in-out hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
-                onClick={onCancel}>
-                Cancel
+                className="absolute top-0 right-0 block rounded px-4 py-2 transition-colors duration-300 ease-in-out text-subColor hover:text-mainColor"
+                onClick={onCancel}
+                style={{fontSize: '1.5rem'}}
+              >
+                  &times;
               </button>
             </div>
           </form>

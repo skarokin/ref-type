@@ -61,10 +61,14 @@ const App = () => {
         wpm={wpm}
         isNewPB={showConfetti}
       />
-      <div className={"fixed bottom-10 left-1/2 flex items-center justify-center transform -translate-x-1/2 text-subColor"}>
-        <VscGithub className={"mr-2"} /> 
-        Github 
-      </div>
+      <a href="https://github.com/skarokin/ref-type">
+        <button 
+          className={"fixed bottom-10 left-1/2 flex items-center justify-center transform -translate-x-1/2 text-subColor block rounded px-4 py-2 transition-colors duration-300 ease-in-out hover:text-mainColor"}
+        >
+          <VscGithub className={"mr-2"} /> 
+          Github 
+        </button>
+      </a>
     </>
   );
 };

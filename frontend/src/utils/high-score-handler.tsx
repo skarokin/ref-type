@@ -49,6 +49,6 @@ export const updateHighScore = async (username: string, wpm: number, accuracy: n
     return res.data.Status === "Success";
   } catch (error) {
       console.error("Error updating high score:", error);
-      return false; // Or handle the error differently
+      return false; 
   }
 };
