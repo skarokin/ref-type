@@ -43,7 +43,6 @@ app.listen(8081, () => {
 // function to verify user is logged in
 const verifyUser = (req, res, next) => {
     // read the JWT token form the cookies sent with the request
-    console.log("verifyUser is running...")
     const token = req.cookies.token;
     if (!token) {
         return res.json({Error: "User not authenticated"});
@@ -69,7 +68,6 @@ const verifyUser = (req, res, next) => {
 // when control is passed from verifyUser to this function, username is attached to the request object
 const fetchTopScores = (req, res, next) => {
     // if user is not logged in, we can't fetch scores
-    console.log("fetchTopScores is running...")
     if (!req.username) {
         return res.json({Error: "User not authenticated"});
     }

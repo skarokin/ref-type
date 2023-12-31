@@ -29,7 +29,7 @@ const useEngine = (userPanelOpened: boolean, leaderboardOpened: boolean, countdo
   const { cursor, typed, clearTyped, totalTyped, resetTotalTyped, errors, clearErrors } = 
     useTyping(state !== "finish", words, userPanelOpened, leaderboardOpened);
   const [wpm, setWPM] = useState(0);
-  const [showConfetti, setShowConfetti] = useState<boolean>(false);
+  const [isNewPB, setIsNewPB] = useState<boolean>(false);
 
   const isStarting = state === "start" && cursor > 0;
   const areWordsFinished = cursor === words.length;
@@ -50,7 +50,7 @@ const useEngine = (userPanelOpened: boolean, leaderboardOpened: boolean, countdo
     if (isStarting) {
       setState("run");
       startCountdown();
-      setShowConfetti(false);
+      setIsNewPB(false);
     }
   }, [isStarting, startCountdown]);
 
@@ -76,7 +76,7 @@ const useEngine = (userPanelOpened: boolean, leaderboardOpened: boolean, countdo
         const success = await updateHighScore(data.username, newWPM, newAccuracy);
         if (success) {
           console.log("updateHighScore success");
-          setShowConfetti(true);
+          setIsNewPB(true);
         } else {
           console.log("updateHighScore failed");
         }
@@ -93,7 +93,7 @@ const useEngine = (userPanelOpened: boolean, leaderboardOpened: boolean, countdo
     }
   }, [clearTyped, areWordsFinished, updateWords, typed]);
 
-  return { state, words, typed, errors, restart, timeLeft, totalTyped, wpm, showConfetti };
+  return { state, words, typed, errors, restart, timeLeft, totalTyped, wpm, isNewPB };
 };
 
 export default useEngine;

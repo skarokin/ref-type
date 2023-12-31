@@ -34,8 +34,9 @@ export default function UserPanel({
 
     axios.defaults.withCredentials = true;
 
-    // fetch user info from server upon opening user panel
+    // fetch user info from server if user panel opened and user is authenticated
     useEffect(() => {
+      if (userPanelOpened && auth) {
         axios.get("http://localhost:8081/userinfo")
         .then(res => {
             if (res.data.Status === "Success") {
@@ -47,7 +48,8 @@ export default function UserPanel({
             }
         })
         .catch(err => console.log(err));
-    }, [userPanelOpened]);
+      }
+    }, [userPanelOpened, auth]);
 
     useEffect(() => {
       if (displayLogin || displayRegister || displayStats) {
@@ -69,9 +71,11 @@ export default function UserPanel({
       setDisplayStats(false);
     };
     
+    // if login success, auth set to true and userPanel closed
     const handleLoginSuccess = () => {
       setDisplayLogin(false);
       setDisplayRegister(false);
+      setAuth(true);
     };
     
     const handleRegisterSuccess = () => {

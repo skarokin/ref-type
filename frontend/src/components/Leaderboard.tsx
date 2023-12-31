@@ -15,7 +15,6 @@ export default function Leaderboard({
 }) {
     const [displayLeaderboard, setDisplayLeaderboard] = useState<boolean>(false);
     const [timeToNextUpdate, setTimeToNextUpdate] = useState<number>(0);
-
     const [leaderboard, setLeaderboard] = useState<any[]>([]);
 
     const handleLeaderboardClick = () => {
@@ -35,7 +34,7 @@ export default function Leaderboard({
         }).catch(err => console.log(err));
     };
 
-    // fetch time left from the server when leaderboard mounts
+    // fetch time left upon initial mount
     useEffect(() => {
         if (displayLeaderboard) {
             fetchTimeLeft()
@@ -47,28 +46,27 @@ export default function Leaderboard({
         }
     }, [displayLeaderboard]);
     
-    // if leaderboard is open, decrement time locally instead of calling server every second
     useEffect(() => {
-        if (displayLeaderboard && timeToNextUpdate > 0) {
-            const timer = setInterval(() => {
-                setTimeToNextUpdate(prevTime => prevTime - 1000);
-            }, 1000);
+        if (displayLeaderboard) {
+            // if leaderboard is open, decrement time locally instead of having to call server every second
+            if (timeToNextUpdate > 0) {
+                const timer = setInterval(() => {
+                    setTimeToNextUpdate(prevTime => prevTime - 1000);
+                }, 1000);
     
-            return () => clearInterval(timer); // cleanup on unmount
+                return () => clearInterval(timer); // cleanup on unmount
+            }
+    
+            // if timer is up, fetch new leaderboard and reset timer 
+            if (timeToNextUpdate <= 0) {   
+                handleLeaderboardClick();
+                setTimeToNextUpdate(5*60*1000);
+            }
+        } else {
+            // if leaderboard unmounts, reset timer so it can be fetched again when opened (to ensure accuracy)
+            setTimeToNextUpdate(1);
         }
-        // if leaderboard closed, reset timer so it can be fetched again when opened
-        if (!displayLeaderboard) {
-            setTimeToNextUpdate(0);
-        }
-    }, [timeToNextUpdate, displayLeaderboard]);
-
-    // if leaderboard is open and time is up, fetch new leaderboard and reset time to 5 minutes
-    useEffect(() => {
-        if (displayLeaderboard && timeToNextUpdate <= 0) {
-            handleLeaderboardClick();
-            setTimeToNextUpdate(5*60*1000);
-        }
-    }, [timeToNextUpdate, displayLeaderboard]);
+    }, [displayLeaderboard, timeToNextUpdate]);
 
     const handleCancelClick = () => {
         setDisplayLeaderboard(false);
@@ -98,7 +96,7 @@ export default function Leaderboard({
                         <h1 className="text-3xl ml-4 mt-4 text-mainColor">Time 15 Leaderboard</h1>
                         <span className="text-s m-4 text-subColorAlt/50">next update in: {formatTime(timeToNextUpdate)}</span>
                         <div className="overflow-x-auto">
-                            <div className="align-middle inline-block min-w-full shadow overflow-hidden bg-bgColor rounded-lg px-8 pt-3 pb-4">
+                            <div className="align-middle inline-block min-w-full shadow overflow-hidden bg-bgColor rounded px-8 pt-3 pb-4">
                                 <table className="min-w-full">
                                 <thead>
                                     <tr>
@@ -107,20 +105,23 @@ export default function Leaderboard({
                                         <th className="px-12 py-3 border-b-2 border-subColor text-left text-xl leading-4 text-subColorAlt/50">wpm</th>
                                         <th className="px-12 py-3 border-b-2 border-subColor text-left text-xl leading-4 text-subColorAlt/50">accuracy</th>
                                     </tr>
+                                    <tr className="h-1"></tr> {/* spacer row since body is rounded*/}
                                 </thead>
-                                    <tbody className="bg-bgColor">
-                                        {leaderboard.map((user: any, rank: number) => (
-                                            <tr key={user.username} className={rank % 2 === 0 ? 'bg-subColorDark': ''}>
-                                                <td className="px-6 py-4 whitespace-no-wrap text-white text-l text-left">{rank + 1}</td>
-                                                <td className="py-4 whitespace-no-wrap text-white text-l text-left">
-                                                    <FaUserCircle size={15} className={"inline mr-2 text-subColor"}/>
-                                                    {user.username}
-                                                </td>
-                                                <td className="px-12 py-4 whitespace-no-wrap text-white text-l text-left">{user.top15_wpm}</td>
-                                                <td className="px-12 py-4 whitespace-no-wrap text-white text-l text-left">{formatPercentage(user.top15_accuracy)}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
+                                <tbody className="bg-bgColor">
+                                    {leaderboard.map((user: any, rank: number) => (
+                                        <tr key={user.username} 
+                                            className={rank % 2 === 0 ? 'bg-subColorDark rounded ring-2 ring-subColorDark': ''}
+                                        >
+                                            <td className="px-6 py-4 whitespace-no-wrap text-white text-l text-left">{rank + 1}</td>
+                                            <td className="py-4 whitespace-no-wrap text-white text-l text-left">
+                                                <FaUserCircle size={15} className={"inline mr-2 text-subColor"}/>
+                                                {user.username}
+                                            </td>
+                                            <td className="px-12 py-4 whitespace-no-wrap text-white text-l text-left">{user.top15_wpm}</td>
+                                            <td className="px-12 py-4 whitespace-no-wrap text-white text-l text-left">{formatPercentage(user.top15_accuracy)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
                                 </table>
                             </div>
                         </div>

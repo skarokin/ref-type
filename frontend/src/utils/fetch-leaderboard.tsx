@@ -7,7 +7,6 @@ import axios from "axios";
 export async function fetchLeaderboard() {
 
     try {
-        console.log("fetching leaderboard...");
         const res = await axios.get("http://localhost:8081/leaderboard");
 
         if (res.data.Status === "Success") {
