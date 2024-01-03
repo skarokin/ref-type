@@ -1,7 +1,7 @@
 import { FaCrown, FaUserCircle } from "react-icons/fa";
 import { fetchLeaderboard, fetchTimeLeft } from "../utils/fetch-leaderboard";
-import { useState, useEffect } from "react";
-import { formatPercentage } from "../utils/helpers";
+import { useState, useEffect, useCallback } from "react";
+import { formatPercentage, formatTime } from "../utils/helpers";
 
 
 export default function Leaderboard({
@@ -17,7 +17,7 @@ export default function Leaderboard({
     const [timeToNextUpdate, setTimeToNextUpdate] = useState<number>(0);
     const [leaderboard, setLeaderboard] = useState<any[]>([]);
 
-    const handleLeaderboardClick = () => {
+    const handleLeaderboardClick = useCallback(() => {
         setDisplayLeaderboard(true);
         setLeaderboardOpened(true);
         fetchLeaderboard()
@@ -32,7 +32,7 @@ export default function Leaderboard({
                 }));
             }
         }).catch(err => console.log(err));
-    };
+    }, [setLeaderboardOpened]);
 
     // fetch time left upon initial mount
     useEffect(() => {
@@ -66,26 +66,19 @@ export default function Leaderboard({
             // if leaderboard unmounts, reset timer so it can be fetched again when opened (to ensure accuracy)
             setTimeToNextUpdate(1);
         }
-    }, [displayLeaderboard, timeToNextUpdate]);
+    }, [displayLeaderboard, timeToNextUpdate, handleLeaderboardClick]);
 
     const handleCancelClick = () => {
         setDisplayLeaderboard(false);
         setLeaderboardOpened(false);
     }
 
-    const formatTime = (time: number) => {
-        const timeInSeconds = time / 1000;
-        const minutes = Math.floor(timeInSeconds / 60);
-        const seconds = Math.floor(timeInSeconds % 60);
-    
-        return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
-    }
-
     return (
-        <div>
+        <div tabIndex={-1}>
             <button 
                 className={"block rounded px-4 py-2 mt-1 text-subColor transition-colors duration-300 ease-in-out hover:text-mainColor"}
                 onClick={handleLeaderboardClick}
+                tabIndex={-1}
             >
                 <FaCrown size={25}/>
             </button> 

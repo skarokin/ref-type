@@ -11,14 +11,36 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isKeyboardCodeAllowed } from "../utils/helpers";
 
-const useTypings = (enabled: boolean, words: string, userPanelOpened: boolean, leaderboardOpened: boolean) => {
+const useTypings = (
+  enabled: boolean, 
+  words: string, 
+  userPanelOpened: boolean, 
+  leaderboardOpened: boolean,
+  setRestartHotKeyPressed: React.Dispatch<React.SetStateAction<boolean>>
+) => {
   const [cursor, setCursor] = useState(0);
   const [typed, setTyped] = useState<string>("");
   const [errors, setErrors] = useState(0);
+  const [lastKey, setLastKey] = useState<string>("");
   const totalTyped = useRef(0);
 
   const keydownHandler = useCallback(
-    ({ key, code }: KeyboardEvent) => {
+    (event: KeyboardEvent) => {
+
+      const { key, code } = event;
+
+      // prevent default tab behavior ONLY IF user panel is not open
+      if (key === "Tab" && !userPanelOpened) {
+        event.preventDefault();
+      }
+
+      setLastKey(key);
+
+      // tab + enter = restart game; works even when game is finished
+      if (key === "Enter" && lastKey === "Tab") {
+        setRestartHotKeyPressed(true);
+      }
+
       if (!enabled || !isKeyboardCodeAllowed(code) || userPanelOpened || leaderboardOpened) {
         return;
       }
@@ -27,6 +49,10 @@ const useTypings = (enabled: boolean, words: string, userPanelOpened: boolean, l
         case "Backspace":
           setTyped((prev) => prev.slice(0, -1));
           setCursor((cursor) => cursor - 1);
+          break; 
+        case "Tab":
+          break;
+        case "Enter":
           break;
         default:
           // ensure user can only type up to words.length characters
@@ -45,11 +71,10 @@ const useTypings = (enabled: boolean, words: string, userPanelOpened: boolean, l
             setErrors((prevErrors) => prevErrors += 1);
             totalTyped.current += 1;
           }
-
       }
     },
     // we always have the latest typing status, word set, or typed string 
-    [enabled, words, typed, userPanelOpened, leaderboardOpened]
+    [enabled, words, typed, userPanelOpened, leaderboardOpened, lastKey, setRestartHotKeyPressed]
   );
 
   const clearTyped = useCallback(() => {

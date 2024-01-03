@@ -88,14 +88,14 @@ export default function UserPanel({
     };
 
     return (
-      <div className={"z-10"}>
+      <div className={"z-10"} tabIndex={-1}>
         <FaUserCircle size={30} className={"block my-2 ml-4 text-subColor"}/>
         {auth ? (
           <div className={"flex flex-col items-start space-y-4"}>
             {(
               <div className={"space-y-4"}>
-                <button className={className} onClick={handleUserStatsClick}>{username}</button>
-                <button className={className} onClick={() => handleLogout(setAuth)}>Logout</button>
+                <button tabIndex={-1} className={className} onClick={handleUserStatsClick}>{username}</button>
+                <button tabIndex={-1} className={className} onClick={() => handleLogout(setAuth)}>Logout</button>
               </div>
               )}
             {displayStats && (
@@ -109,7 +109,7 @@ export default function UserPanel({
           </div>
         ) : (
           <div className="flex flex-col items-start space-y-4">
-            {<button className={className} onClick={handleLoginClick}>Login</button>}
+            {<button tabIndex={-1} className={className} onClick={handleLoginClick}>Login</button>}
             {displayLogin && (
               <div className={"ml-5"}>
                 <LoginForm 
@@ -118,7 +118,7 @@ export default function UserPanel({
                 />
               </div>
             )}
-            {<button className={className} onClick={handleRegisterClick}>Register</button>}
+            {<button tabIndex={-1} className={className} onClick={handleRegisterClick}>Register</button>}
             {displayRegister && (
               <div className={"ml-5"}>
                   <RegisterForm onSuccess={handleRegisterSuccess} onCancel={() => setDisplayRegister(false)}/> 

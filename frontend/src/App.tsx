@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import GeneratedWords from "./components/GeneratedWords";
 import RestartButton from "./components/RestartButton";
 import TestResults from "./components/TestResults";
@@ -13,41 +13,43 @@ const App = () => {
   // defined in a parent so we can pass to useEngine
   const [userPanelOpened, setUserPanelOpened] = useState<boolean>(false);
   const [leaderboardOpened, setLeaderboardOpened] = useState<boolean>(false);
-  const [timer, setTimer] = useState<number>(15);
+  const timer = 15;
+
+  const wordsContainerRef = useRef(null);
 
   const { words, typed, timeLeft, errors, state, restart, totalTyped, wpm, isNewPB } =
-    useEngine(userPanelOpened, leaderboardOpened, timer);
+    useEngine(userPanelOpened, leaderboardOpened, timer, wordsContainerRef);
 
   return (
     <>
       <div className="absolute w-[800px] flex justify-between items-start top-20">
-          <LogoHeader className={""}/>
-          <Leaderboard 
-            leaderboardOpened={leaderboardOpened}
-            setLeaderboardOpened={setLeaderboardOpened}
-            className={""}
-          />
-          <UserPanel
-            setUserPanelOpened={setUserPanelOpened}
-            userPanelOpened={userPanelOpened}
-          />
-      </div>
-        <CountdownTimer timeLeft={timeLeft} />
-        <div className="flex flex-col items-center">
-      <WordsContainer>
-        <GeneratedWords key={words} words={words} />
-        {/* User typed characters will be overlayed over the generated words; ensure same Tailwind properties */}
-        <TypedCharacters
-          className="absolute inset-0 break-words whitespace-pre-wrap"
-          words={words}
-          userInput={typed}
+        <LogoHeader className={""}/>
+        <Leaderboard 
+          leaderboardOpened={leaderboardOpened}
+          setLeaderboardOpened={setLeaderboardOpened}
+          className={""}
         />
-      </WordsContainer>
-      <RestartButton
-        className="mt-20 text-subColor"
-        onRestart={restart}
-      />
-    </div>
+        <UserPanel
+          setUserPanelOpened={setUserPanelOpened}
+          userPanelOpened={userPanelOpened}
+        />
+      </div>
+      <CountdownTimer timeLeft={timeLeft} />
+      <div className="flex flex-col items-center space-y-4">
+        <WordsContainer ref={wordsContainerRef}>
+          <GeneratedWords key={words} words={words} />
+          {/* User typed characters will be overlayed over the generated words; ensure same Tailwind properties */}
+          <TypedCharacters
+            className="absolute inset-0 break-words whitespace-pre-wrap"
+            words={words}
+            userInput={typed}
+          />
+        </WordsContainer>
+        <RestartButton
+          className="relative text-subColor top-5"
+          onRestart={restart}
+        />
+      </div>
       <TestResults
         className="absolute bottom-15 left-1/2 transform -translate-x-1/2 w-full mt-10"
         state={state}
@@ -57,25 +59,40 @@ const App = () => {
         wpm={wpm}
         isNewPB={isNewPB}
       />
-      <a href="https://github.com/skarokin/ref-type">
-        <button 
-          className={"fixed bottom-10 left-1/2 flex items-center justify-center transform -translate-x-1/2 text-subColor block rounded px-4 py-2 transition-colors duration-300 ease-in-out hover:text-mainColor"}
+      <footer className="absolute bottom-2 left-1/2 flex flex-col items-center justify-center transform -translate-x-1/2 space-y-4 text-subColor">
+        <div className="relative bottom-4 text-xs">
+          <ToolTip>tab</ToolTip> + <ToolTip>enter</ToolTip> - restart test
+        </div>
+        <a 
+          href="https://github.com/skarokin/ref-type"
+          tabIndex={-1}
         >
-          <VscGithub className={"mr-2"} /> 
-          Github 
-        </button>
-      </a>
+          <button 
+            tabIndex={-1}
+            className={"relative bottom-2 left-1/2 flex items-center justify-center transform -translate-x-1/2 text-subColor block rounded px-4 py-2 transition-colors duration-300 ease-in-out hover:text-mainColor"}
+          >
+            <VscGithub className={"mr-2"} /> 
+            GitHub 
+          </button>
+        </a>
+      </footer>
     </>
   );
 };
 
-const WordsContainer = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <div className="relative min-w-[800px] h-[150px] text-3xl max-w-xl leading-relaxed break-words mt-3 select-none">
-      {children}
-    </div>
-  );
-};
+const WordsContainer = React.forwardRef<HTMLDivElement, { children: React.ReactNode }>(
+  ({ children }, ref) => {
+    return (
+      <div 
+        ref={ref}
+        tabIndex={0} 
+        className="relative min-w-[800px] h-[150px] text-3xl max-w-xl leading-relaxed break-words mt-3 select-none"
+      >
+        {children}
+      </div>
+    );
+  }
+);
 
 const CountdownTimer = ({ timeLeft }: { timeLeft: number }) => {
   return <h2 className="text-mainColor text-xl">Time: {timeLeft}</h2>;
@@ -99,6 +116,14 @@ const LogoHeader = ({ className }: { className: string }) => {
       <path d="M41.0656 14.6889C41.0656 14.2063 41.2116 13.8042 41.5031 13.4825C41.8094 13.1608 42.2105 13 42.7063 13C43.2022 13 43.5959 13.1608 43.8875 13.4825C44.1937 13.8042 44.3469 14.2063 44.3469 14.6889C44.3469 15.1568 44.1937 15.5516 43.8875 15.8733C43.5959 16.1803 43.2022 16.3339 42.7063 16.3339C42.2105 16.3339 41.8094 16.1803 41.5031 15.8733C41.2116 15.5516 41.0656 15.1568 41.0656 14.6889ZM41 21.9707C41 21.5028 41.1459 21.108 41.4375 20.7863C41.7292 20.4647 42.1303 20.3038 42.6406 20.3038C43.1366 20.3038 43.5303 20.4647 43.8219 20.7863C44.1281 21.108 44.2813 21.5028 44.2813 21.9707C44.2813 22.4387 44.1281 22.8335 43.8219 23.1551C43.5303 23.4768 43.1366 23.6377 42.6406 23.6377C42.1303 23.6377 41.7292 23.4768 41.4375 23.1551C41.1459 22.8335 41 22.4387 41 21.9707Z" fill="#ec4c56"/>
       </svg>
     </>
+  );
+}
+
+const ToolTip = ({ children }: {children: React.ReactNode }) => {
+  return (
+      <div className={"inline block rounded px-2 py-1 text-bgColor bg-subColor"}>
+        {children}
+      </div>
   );
 }
 
