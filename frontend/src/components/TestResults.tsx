@@ -10,7 +10,6 @@ const Results = ({
   state,
   errors,
   accuracyPercentage,
-  total,
   wpm,
   isNewPB,
   className = "",
@@ -18,7 +17,6 @@ const Results = ({
   state: State;
   errors: number;
   accuracyPercentage: number;
-  total: number;
   wpm: number;
   isNewPB: boolean,
   className?: string;
@@ -67,14 +65,6 @@ const Results = ({
       >
         <span className="text-subColorAlt">Errors: </span> 
         <span className="text-mainColor">{errors}</span>
-      </motion.li>
-      <motion.li
-        initial={initial}
-        animate={animate}
-        transition={{ duration: 0.3, delay: 2.0 }}
-      >
-        <span className="text-subColorAlt">Total Typed: </span>
-        <span className="text-mainColor">{total}</span>
       </motion.li>
     </motion.ul>
   );

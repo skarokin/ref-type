@@ -55,7 +55,6 @@ const App = () => {
         state={state}
         errors={errors}
         accuracyPercentage={calculateAccuracyPercentage(errors, totalTyped)}
-        total={totalTyped}
         wpm={wpm}
         isNewPB={isNewPB}
       />
