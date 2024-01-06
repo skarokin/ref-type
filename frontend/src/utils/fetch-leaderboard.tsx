@@ -7,7 +7,7 @@ import axios from "axios";
 export async function fetchLeaderboard() {
 
     try {
-        const res = await axios.get("http://localhost:8081/leaderboard");
+        const res = await axios.get("https://us-central1-steam-link-409216.cloudfunctions.net/api/leaderboard");
 
         if (res.data.Status === "Success") {
             return {
@@ -30,7 +30,7 @@ export async function fetchLeaderboard() {
 export async function fetchTimeLeft() {
 
     try {
-        const res = await axios.get("http://localhost:8081/timeLeft");
+        const res = await axios.get("https://us-central1-steam-link-409216.cloudfunctions.net/api/timeLeft");
 
         if (res.data.Status === "Success") {
             return {

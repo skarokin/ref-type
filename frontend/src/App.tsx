@@ -35,7 +35,7 @@ const App = () => {
         />
       </div>
       <CountdownTimer timeLeft={timeLeft} />
-      <div className="flex flex-col items-center space-y-4">
+      <div tabIndex={-1} className="flex flex-col items-center space-y-4">
         <WordsContainer ref={wordsContainerRef}>
           <GeneratedWords key={words} words={words} />
           {/* User typed characters will be overlayed over the generated words; ensure same Tailwind properties */}

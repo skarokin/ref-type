@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default function handleLogout(setAuth: React.Dispatch<React.SetStateAction<boolean>>) {
-    axios.post('http://localhost:8081/logout')
+    axios.post('https://us-central1-steam-link-409216.cloudfunctions.net/api/logout')
     .then(res => {
         if(res.data.Status === 'Success') {
             console.log('Successfully logged out');

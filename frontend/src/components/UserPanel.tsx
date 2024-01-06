@@ -37,7 +37,7 @@ export default function UserPanel({
     // fetch user info from server if user panel opened and user is authenticated
     useEffect(() => {
       if (userPanelOpened && auth) {
-        axios.get("http://localhost:8081/userinfo")
+        axios.get("https://us-central1-steam-link-409216.cloudfunctions.net/api/userinfo")
         .then(res => {
             if (res.data.Status === "Success") {
                 setAuth(true);

@@ -1,10 +1,11 @@
-import express from 'express';
-import mysql from "mysql";
-import cors from "cors";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
+const express = require('express');
+const mysql = require('mysql');
+const cors = require("cors");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const dotenv = require("dotenv");
+const functions = require("firebase-functions");
 
 dotenv.config({ path: '.env.local' });
 
@@ -14,25 +15,41 @@ const app = express();
 app.use(express.json());
 
 // allow http://localhost:3000 to access this server 
-app.use(cors({
-    origin: ["http://localhost:3000"],
-    methods: ["POST", "GET"],
-    credentials: true,
-}));
+// app.use(cors({
+//     origin: ["http://localhost:3000"],
+//     methods: ["POST", "GET"],
+//     credentials: true,
+// }));
+
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000"); 
+    res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    res.header("Access-Control-Allow-Credentials", true);
+    next();
+});
 app.use(cookieParser());
 
 // create a connection to the mysql database    
-const db = mysql.createConnection({ 
-    host: process.env.DB_HOST,
+const db = mysql.createConnection({
+    socketPath: `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`,
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
-    database: process.env.DB_DATABASE,
+    database: process.env.DB_DATABASE  
 });
 
-// run server on port 8081
-app.listen(8081, () => {
-    console.log("Server is running on port 8081");
-});
+db.connect(function(err) {
+    if (err) {
+        console.error("Error connecting to database: " + err.stack);
+        return;
+    }
+    console.log("Connected to database");
+}); 
+
+// const port = 8081;
+// app.listen(port, () => {
+//     console.log(`Server is running on port ${port}`);
+// });
 
 /* 
 *  ================================================================================
@@ -249,3 +266,6 @@ const updateScoresHandler = (req, res) => {
         return res.json({Status: "Success"});
     });
 }
+
+// whenever there is a request on our firebase function, run this express app instance 
+exports.api = functions.https.onRequest(app);
