@@ -1,7 +1,6 @@
 # ref-type
-First full-stack project
+Competitive typing game with leaderboard... comparison brings joy
 
 Huge thanks to this repository https://github.com/gionathas/speed-typing for helping to set up the base typing game logic
 
-# to-be-done
-1. Deploy front end and backend!
+Aesthetic inspired by Monkeytype's "bushido" theme
