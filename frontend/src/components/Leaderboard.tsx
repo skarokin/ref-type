@@ -3,7 +3,6 @@ import { fetchLeaderboard, fetchTimeLeft } from "../utils/fetch-leaderboard";
 import { useState, useEffect, useCallback } from "react";
 import { formatPercentage, formatTime } from "../utils/helpers";
 
-
 export default function Leaderboard({
     leaderboardOpened,
     setLeaderboardOpened,
@@ -34,7 +33,7 @@ export default function Leaderboard({
         }).catch(err => console.log(err));
     }, [setLeaderboardOpened]);
 
-    // fetch time left upon initial mount
+    // fetch time left from server upon initial mount
     useEffect(() => {
         if (displayLeaderboard) {
             fetchTimeLeft()
@@ -51,18 +50,18 @@ export default function Leaderboard({
             // if leaderboard is open, decrement time locally instead of having to call server every second
             if (timeToNextUpdate > 0) {
                 const timer = setInterval(() => {
-                    setTimeToNextUpdate(prevTime => prevTime - 1000);
+                    setTimeToNextUpdate((prevTime => prevTime - 1000));
                 }, 1000);
     
                 return () => clearInterval(timer); // cleanup on unmount
             }
     
-            // if timer is up, fetch new leaderboard and reset timer to 4:59
+            // if timer is up and leaderboard is open, fetch new leaderboard and reset timer to 4:59
             if (timeToNextUpdate <= 0) {   
                 handleLeaderboardClick();
-                setTimeToNextUpdate((4*60*1000) + (59*1000));
+                setTimeToNextUpdate((4*60*1000)+(59*1000));
             }
-        } 
+        }
     }, [displayLeaderboard, timeToNextUpdate, handleLeaderboardClick]);
 
     const handleCancelClick = () => {
