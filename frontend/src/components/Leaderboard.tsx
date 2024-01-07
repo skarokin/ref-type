@@ -62,10 +62,7 @@ export default function Leaderboard({
                 handleLeaderboardClick();
                 setTimeToNextUpdate((4*60*1000) + (59*1000));
             }
-        } else {
-            // if leaderboard unmounts, reset timer so it can be fetched again when opened (to ensure accuracy)
-            setTimeToNextUpdate(1);
-        }
+        } 
     }, [displayLeaderboard, timeToNextUpdate, handleLeaderboardClick]);
 
     const handleCancelClick = () => {

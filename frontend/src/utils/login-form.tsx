@@ -32,7 +32,7 @@ export default function LoginForm({
     const handleSubmit = (e: any) => {
         e.preventDefault();
         // call our server to log the user in
-        axios.post("https://us-central1-steam-link-409216.cloudfunctions.net/api/login", values)
+        axios.post(`${process.env.REACT_APP_FIRE_CLOUD}/login`, values)
         .then(res => {
             if (res.data.Status === "Success") {
                 console.log("Login success");

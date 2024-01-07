@@ -13,7 +13,7 @@ import axios from "axios";
 export const fetchHighScore = async () => {
   try {
     console.log("fetching high score...")
-    const res = await axios.get("https://us-central1-steam-link-409216.cloudfunctions.net/api/userinfo");
+    const res = await axios.get(`${process.env.REACT_APP_FIRE_CLOUD}/userinfo`);
 
     if (res.data.Status === "Success") {
       console.log("high score fetched...");
@@ -40,7 +40,7 @@ export const fetchHighScore = async () => {
 // updates high score
 export const updateHighScore = async (username: string, wpm: number, accuracy: number) => {
   try {
-    const res = await axios.post("https://us-central1-steam-link-409216.cloudfunctions.net/api/update", {
+    const res = await axios.post(`${process.env.REACT_APP_FIRE_CLOUD}/update`, {
       username: username,
       top15_wpm: wpm,
       top15_accuracy: accuracy,
