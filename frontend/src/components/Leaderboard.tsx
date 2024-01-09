@@ -4,65 +4,75 @@ import { useState, useEffect, useCallback } from "react";
 import { formatPercentage, formatTime } from "../utils/helpers";
 
 export default function Leaderboard({
-    leaderboardOpened,
     setLeaderboardOpened,
-    className = "",
 }: {
-    leaderboardOpened: boolean;
     setLeaderboardOpened: React.Dispatch<React.SetStateAction<boolean>>;
-    className?: string;
 }) {
     const [displayLeaderboard, setDisplayLeaderboard] = useState<boolean>(false);
     const [timeToNextUpdate, setTimeToNextUpdate] = useState<number>(0);
     const [leaderboard, setLeaderboard] = useState<any[]>([]);
 
     const handleLeaderboardClick = useCallback(() => {
-        setDisplayLeaderboard(true);
-        setLeaderboardOpened(true);
-        fetchLeaderboard()
-        .then(res => {
-            if (res && res.Status === "Success") {
-                setLeaderboard(res.leaderboard.map((user: any) => {
-                    return {
-                        username: user.username,
-                        top15_wpm: user.top15_wpm,
-                        top15_accuracy: user.top15_accuracy,
-                    }
-                }));
-            }
-        }).catch(err => console.log(err));
-    }, [setLeaderboardOpened]);
+        const cachedLeaderboard = localStorage.getItem("leaderboard");
+        const cachedTimeLeft = localStorage.getItem("timeLeft");
 
-    // fetch time left from server upon initial mount
-    useEffect(() => {
-        if (displayLeaderboard) {
+        // if cached leaderboard is available and time left greater than 1000ms,
+        // use cached leaderboard and cached time left
+        if (cachedLeaderboard && cachedTimeLeft && Number(cachedTimeLeft) > 1000) {
+            setLeaderboard(JSON.parse(cachedLeaderboard));
+            console.log("using cached leaderboard and time");
+        // else, fetch new leaderboard and time left from server (time left is called to keep in sync)
+        } else {
+            fetchLeaderboard()
+            .then(res => {
+                if (res && res.Status === "Success") {
+                    const leaderboardData = res.leaderboard.map((user: any) => {
+                        return {
+                            username: user.username,
+                            top15_wpm: user.top15_wpm,
+                            top15_accuracy: user.top15_accuracy,
+                        }
+                    });
+                    setLeaderboard(leaderboardData);
+                    localStorage.setItem("leaderboard", JSON.stringify(leaderboardData));
+                }
+            }).catch(err => console.log(err));
+
             fetchTimeLeft()
             .then(res => {
                 if (res && res.Status === "Success") {
                     setTimeToNextUpdate(res.timeLeft);
+                    localStorage.setItem("timeLeft", res.timeLeft);
                 }
-            })
+            }).catch(err => console.log(err));
+
+            console.log("fetching new leaderboard and time");
         }
-    }, [displayLeaderboard]);
+    }, [setLeaderboardOpened]);
     
     useEffect(() => {
-        if (displayLeaderboard) {
-            // if leaderboard is open, decrement time locally instead of having to call server every second
-            if (timeToNextUpdate > 0) {
-                const timer = setInterval(() => {
-                    setTimeToNextUpdate((prevTime => prevTime - 1000));
-                }, 1000);
+        // decrement time locally instead of having to call server every second
+        if (timeToNextUpdate > 0) {
+            const timer = setInterval(() => {
+                // update cached time left
+                localStorage.setItem("timeLeft", String(timeToNextUpdate));
+                setTimeToNextUpdate((prevTime => prevTime - 1000));
+            }, 1000);
     
-                return () => clearInterval(timer); // cleanup on unmount
-            }
-    
-            // if timer is up and leaderboard is open, fetch new leaderboard and reset timer to 4:59
-            if (timeToNextUpdate <= 0) {   
-                handleLeaderboardClick();
-                setTimeToNextUpdate((4*60*1000)+(59*1000));
+            return () => {
+                clearInterval(timer); // cleanup on unmount
+                // update cached time left
+                localStorage.setItem("timeLeft", String(timeToNextUpdate));
             }
         }
-    }, [displayLeaderboard, timeToNextUpdate, handleLeaderboardClick]);
+    
+        // if timer is up, fetch new leaderboard and reset timer to 4:59
+        if (timeToNextUpdate <= 0) {   
+            setTimeToNextUpdate((4*60*1000)+(59*1000));
+            handleLeaderboardClick();
+        }
+
+    }, [timeToNextUpdate, handleLeaderboardClick]);
 
     const handleCancelClick = () => {
         setDisplayLeaderboard(false);
@@ -73,7 +83,11 @@ export default function Leaderboard({
         <div tabIndex={-1}>
             <button 
                 className={"block rounded px-4 py-2 mt-1 text-subColor transition-colors duration-300 ease-in-out hover:text-mainColor"}
-                onClick={handleLeaderboardClick}
+                onClick={() => {
+                    handleLeaderboardClick();
+                    setDisplayLeaderboard(true);
+                    setLeaderboardOpened(true);
+                }}
                 tabIndex={-1}
             >
                 <FaCrown size={25}/>

@@ -25,9 +25,7 @@ const App = () => {
       <div className="absolute w-[800px] flex justify-between items-start top-20">
         <LogoHeader className={""}/>
         <Leaderboard 
-          leaderboardOpened={leaderboardOpened}
           setLeaderboardOpened={setLeaderboardOpened}
-          className={""}
         />
         <UserPanel
           setUserPanelOpened={setUserPanelOpened}
