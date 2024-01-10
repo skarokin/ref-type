@@ -1,6 +1,6 @@
 import { FaCrown, FaUserCircle } from "react-icons/fa";
 import { fetchLeaderboard, fetchTimeLeft } from "../utils/fetch-leaderboard";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { formatPercentage, formatTime } from "../utils/helpers";
 
 export default function Leaderboard({
@@ -9,70 +9,69 @@ export default function Leaderboard({
     setLeaderboardOpened: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
     const [displayLeaderboard, setDisplayLeaderboard] = useState<boolean>(false);
-    const [timeToNextUpdate, setTimeToNextUpdate] = useState<number>(0);
+    const [timeToNextUpdate, setTimeToNextUpdate] = useState<number>(5*60*1000);
     const [leaderboard, setLeaderboard] = useState<any[]>([]);
 
-    const handleLeaderboardClick = useCallback(() => {
-        const cachedLeaderboard = localStorage.getItem("leaderboard");
-        const cachedTimeLeft = localStorage.getItem("timeLeft");
+    // fetches leaderboard and time and caches data into local storage
+    const fetchLeaderboardAndTime = () => {
+        fetchLeaderboard()
+        .then(res => {
+            if (res && res.Status === "Success") {
+                const leaderboardData = res.leaderboard.map((user: any) => {
+                    return {
+                        username: user.username,
+                        top15_wpm: user.top15_wpm,
+                        top15_accuracy: user.top15_accuracy,
+                    }
+                });
+                setLeaderboard(leaderboardData);
+                localStorage.setItem("leaderboard", JSON.stringify(leaderboardData));
+            }
+        }).catch(err => console.log(err));
 
-        // if cached leaderboard is available and time left greater than 1000ms,
-        // use cached leaderboard and cached time left
-        if (cachedLeaderboard && cachedTimeLeft && Number(cachedTimeLeft) > 1000) {
-            setLeaderboard(JSON.parse(cachedLeaderboard));
-            console.log("using cached leaderboard and time");
-        // else, fetch new leaderboard and time left from server (time left is called to keep in sync)
-        } else {
-            fetchLeaderboard()
-            .then(res => {
-                if (res && res.Status === "Success") {
-                    const leaderboardData = res.leaderboard.map((user: any) => {
-                        return {
-                            username: user.username,
-                            top15_wpm: user.top15_wpm,
-                            top15_accuracy: user.top15_accuracy,
-                        }
-                    });
-                    setLeaderboard(leaderboardData);
-                    localStorage.setItem("leaderboard", JSON.stringify(leaderboardData));
-                }
-            }).catch(err => console.log(err));
+        fetchTimeLeft()
+        .then(res => {
+            if (res && res.Status === "Success") {
+                setTimeToNextUpdate(res.timeLeft);
+                localStorage.setItem("timeLeft", res.timeLeft);
+            }
+        });
+    }
 
-            fetchTimeLeft()
-            .then(res => {
-                if (res && res.Status === "Success") {
-                    setTimeToNextUpdate(res.timeLeft);
-                    localStorage.setItem("timeLeft", res.timeLeft);
-                }
-            }).catch(err => console.log(err));
-
-            console.log("fetching new leaderboard and time");
-        }
-    }, [setLeaderboardOpened]);
-    
+    // fetch leaderboard and time left on initial mount to ensure data is synced with server
     useEffect(() => {
-        // decrement time locally instead of having to call server every second
+        fetchLeaderboardAndTime();
+        console.log("leaderboard mounted, fetching...");
+    }, []);
+
+    // decrement time locally to prevent spamming requests to server
+    useEffect(() => {
         if (timeToNextUpdate > 0) {
             const timer = setInterval(() => {
                 // update cached time left
                 localStorage.setItem("timeLeft", String(timeToNextUpdate));
-                setTimeToNextUpdate((prevTime => prevTime - 1000));
-            }, 1000);
-    
+                setTimeToNextUpdate(prevTime => prevTime - 1000);
+            }, 1000)
+
+            // cleanup and cache time left on umount
             return () => {
-                clearInterval(timer); // cleanup on unmount
-                // update cached time left
+                clearInterval(timer);
                 localStorage.setItem("timeLeft", String(timeToNextUpdate));
             }
+        // if time left is 0, fetch new data and reset timer 
+        } else if (timeToNextUpdate <= 0) {
+            setTimeToNextUpdate((4*60*1000) + (59*1000));
+            fetchLeaderboardAndTime();
+            console.log("fetching new leaderboard because time is 0");
         }
+    }, [timeToNextUpdate])
     
-        // if timer is up, fetch new leaderboard and reset timer to 4:59
-        if (timeToNextUpdate <= 0) {   
-            setTimeToNextUpdate((4*60*1000)+(59*1000));
-            handleLeaderboardClick();
-        }
-
-    }, [timeToNextUpdate, handleLeaderboardClick]);
+    const handleLeaderboardClick = () => {
+        const cachedLeaderboard = localStorage.getItem("leaderboard");
+        
+        setLeaderboard(JSON.parse(cachedLeaderboard!));
+        console.log("using cached leaderboard");
+    }
 
     const handleCancelClick = () => {
         setDisplayLeaderboard(false);
