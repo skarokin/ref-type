@@ -1,7 +1,7 @@
 # ref-type
 Inspired by Monkeytype
 
-Demo given below (Google Cloud SQL is really expensive, this is just in case I need to cancel it)
+Demo given below (ran out of Google Cloud SQL credits lol)
 
 https://github.com/skarokin/ref-type/assets/119766041/d6186fe4-6251-46f5-aa08-dd0cc7b153be
 
